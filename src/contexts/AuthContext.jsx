@@ -1,29 +1,28 @@
 import { createContext, useEffect, useState } from 'react';
-import jwtDecode from 'jwt-decode'; // : ใช้ในการถอดรหัส Token JWT เพื่อรับข้อมูลผู้ใช้.
-
-import * as authService from '../api/auth-api';
 import { getAccessToken, removeAccessToken, setAccessToken } from '../utils/localstorage';
+
+import jwtDecode from 'jwt-decode'; // : ใช้ในการถอดรหัส Token JWT เพื่อรับข้อมูลผู้ใช้.
+import * as authService from '../api/auth-api';
 
 export const AuthContext = createContext();
 
 export default function AuthContextProvider({ children }) {
-    const [authenticatedUser, setAuthenticatedUser] = useState(
-        getAccessToken() ? true : null
-    );
+    const [authenticatedUser, setAuthenticatedUser] = useState(getAccessToken() ? true : null);
 
     useEffect(() => {
         const fetchAuthUser = async () => {
             try {
-                const res = await authService.getMe();
+                const res = await authService.fetchMe();
                 setAuthenticatedUser(res.data.user);
             } catch (err) {
                 removeAccessToken();
             }
         };
+
         if (getAccessToken()) {
             fetchAuthUser();
         }
-    }, [authenticatedUser]);
+    }, []);
 
     const login = async (email, password) => {
         const res = await authService.login({ email, password });
