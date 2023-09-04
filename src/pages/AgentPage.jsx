@@ -1,20 +1,30 @@
+import AgentInfo from "../features/agent/AgentInfo";
+import Datepicker from "react-tailwindcss-datepicker";
 export default function AgentPage() {
   return (
     <>
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold text-gray-900">AgentPage</h1>
-        </div>
-      </header>
-      <main>
-        <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          {/* <!-- Replace with your content --> */}
-          <div className="px-4 py-6 sm:px-0">
-            <div className="border-4 border-dashed border-gray-200 rounded-lg h-96"></div>
+      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 mt-8 mb-8 flex flex-col gap-12">
+        <Datepicker />
+        <header className="bg-white shadow ">
+          <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div className="items-center justify-between md:flex">
+              <div className="max-w-lg">
+                <h3 className="text-gray-800 text-xl font-bold sm:text-2xl">Agent</h3>
+                <p className="text-gray-600 mt-2">
+                  Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                </p>
+              </div>
+              <div className="mt-3 md:mt-0">
+                <button className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm">
+                  Add Member
+                </button>
+              </div>
+            </div>
           </div>
-          {/* <!-- /End replace --> */}
-        </div>
-      </main>
+        </header>
+
+        <AgentInfo />
+      </div>
     </>
-  )
+  );
 }

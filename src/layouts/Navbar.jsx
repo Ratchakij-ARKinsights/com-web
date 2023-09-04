@@ -6,9 +6,10 @@ import useAuth from "../hooks/useAuth";
 const menus = [
   { id: 1, to: "/", name: "Dashboard" },
   { id: 2, to: "/agent", name: "Agent" },
-  { id: 3, to: "/config", name: "Config" },
-  { id: 4, to: "/report", name: "Reports" },
+  { id: 3, to: "/product", name: "Product" },
+  { id: 4, to: "/config", name: "Config" },
   { id: 5, to: "/about", name: "About" },
+  { id: 6, to: "/create", name: "Create" },
 ];
 
 export default function Navbar() {

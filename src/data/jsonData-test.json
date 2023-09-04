@@ -1,0 +1,68 @@
+{
+  "agent": [
+    {
+      "name": "John Michael",
+      "email": "john@creative-tim.com",
+      "code": "A620201",
+      "status": true,
+      "job": ["Manager", "Organization"],
+      "salary": "$75K",
+      "completion": 60,
+      "bank": "Bangkok Bank",
+      "account_number": 9140190217,
+      "date": "23/04/18",
+      "img": "/img/team-2.jpeg"
+    }
+  ],
+
+  "agent-work": {
+    "work-days": 30,
+    "leave-days": 7,
+    "benefit-days": 1000,
+    "sso": 450
+  },
+
+
+  "product-com": [
+    {
+      "name": "MOTOR",
+      "status": true,
+      "com-tier": {
+        "tier-1": 50000,
+        "tier-2": 150001,
+        "tier-3": 250001
+      },
+      "com-percent": {
+        "percent-1": 0.5,
+        "percent-2": 1,
+        "percent-3": 1.5
+      }
+    },
+    {
+      "name": "RENEWAL",
+      "status": false,
+      "com-tier": {
+        "tier-1": 100000,
+        "tier-2": 200001,
+        "tier-3": 300001
+      },
+      "com-percent": {
+        "percent-1": 0.2,
+        "percent-2": 0.7,
+        "percent-3": 1
+      }
+    }
+  ],
+  "extra": {
+    "exceed": 450000
+  },
+  "extra_com": {
+    "percent": 2
+  },
+  "commission": {
+    "com-percent": 2.5
+  },
+  "deduction": {
+    "hold-percent": 5
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "agents": [
+    {
+      "id": 1,
+      "code": "A1XXXX",
+      "name": "App fddsf",
+      "position": "Supervisor",
+      "transactions": [
+        {
+          "product_type": "P1",
+          "product_id": 1,
+          "price": 20000,
+          "total": 1,
+          "totalAmout": 20000,
+          "date": "25/08/2023"
+        },
+        {
+          "product_type": "P2",
+          "product_id": 1,
+          "price": 10000,
+          "total": 2,
+          "totalAmout": 20000,
+          "date": "26/08/2023"
+        },
+        {
+          "product_type": "P3",
+          "product_id": 2,
+          "price": 5000,
+          "total": 4,
+          "totalAmout": 10000,
+          "date": "27/08/2023"
+        }
+      ]
+    },
+
+    {
+      "id": 2,
+      "code": "A2XXXX",
+      "name": "Bccc fddsf",
+      "position": "Telesales",
+      "transactions": [
+        {
+          "product_type": "P1",
+          "product_id": 2,
+          "price": 40000,
+          "total": 2,
+          "totalAmout": 40000,
+          "date": "20/08/2023"
+        },
+        {
+          "product_type": "P2",
+          "product_id": 1,
+          "price": 10000,
+          "total": 4,
+          "totalAmout": 20000,
+          "date": "21/08/2023"
+        },
+        {
+          "product_type": "P3",
+          "product_id": 1,
+          "price": 5000,
+          "total": 5,
+          "totalAmout": 10000,
+          "date": "22/08/2023"
+        }
+      ]
+    }
+  ]
+}

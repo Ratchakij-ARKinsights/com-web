@@ -1,13 +1,14 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import RedirectIfAuthenticate from '../features/auth/RedirectIfAuthenticate';
-import ProtectedRoute from '../features/auth/ProtectedRoute';
+import RedirectIfAuthenticate from "../features/auth/components/RedirectIfAuthenticate";
+import ProtectedRoute from "../features/auth/components/ProtectedRoute";
 import LoginPage from "../pages/LoginPage";
 import Container from "../layouts/Container";
-import HomePage from "../pages/HomePage";
+import Dashboard from "../pages/Dashboard";
 import AgentPage from "../pages/AgentPage";
-import ConfigPage from "../pages/ConfigPage";
-import ReportPage from "../pages/ReportPage";
+import ProductPage from "../pages/ProductPage";
 import AboutPage from "../pages/AboutPage";
+import ConfigPage from "../pages/ConfigPage";
+import CreatePage from "../pages/CreatePage";
 
 const router = createBrowserRouter([
   {
@@ -16,21 +17,21 @@ const router = createBrowserRouter([
       <RedirectIfAuthenticate>
         <LoginPage />
       </RedirectIfAuthenticate>
-    )
+    ),
   },
   {
     element: (
       <ProtectedRoute>
         <Container />
       </ProtectedRoute>
-    )
-    ,
+    ),
     children: [
-      { path: "/", element: <HomePage /> },
+      { path: "/", element: <Dashboard /> },
       { path: "/agent", element: <AgentPage /> },
+      { path: "/product", element: <ProductPage /> },
       { path: "/config", element: <ConfigPage /> },
-      { path: "/report", element: <ReportPage /> },
       { path: "/about", element: <AboutPage /> },
+      { path: "/create", element: <CreatePage /> },
     ],
   },
 ]);

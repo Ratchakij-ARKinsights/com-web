@@ -1,37 +1,5 @@
 {
-  "tableItems": [
-    {
-      "name": "Liam James",
-      "email": "liamjames@example.com",
-      "position": "Software engineer",
-      "salary": "$100K"
-    },
-    {
-      "name": "Olivia Emma",
-      "email": "oliviaemma@example.com",
-      "position": "Product designer",
-      "salary": "$90K"
-    },
-    {
-      "name": "William Benjamin",
-      "email": "william.benjamin@example.com",
-      "position": "Front-end developer",
-      "salary": "$80K"
-    },
-    {
-      "name": "Henry Theodore",
-      "email": "henrytheodore@example.com",
-      "position": "Laravel engineer",
-      "salary": "$120K"
-    },
-    {
-      "name": "Amelia Elijah",
-      "email": "amelia.elijah@example.com",
-      "position": "Open source manager",
-      "salary": "$75K"
-    }
-  ],
-  "posts": [
+  "products_01": [
     {
       "title": "React Tailwind Card with Grid 1",
       "img": "https://cdn.pixabay.com/photo/2019/12/17/14/43/christmas-4701783__340.png",
@@ -52,5 +20,7 @@
       "img": "https://cdn.pixabay.com/photo/2019/12/17/14/43/christmas-4701783__340.png",
       "content": "react tailwind css card with image It is a long established fact that a reader will be distracted by the readable content"
     }
-  ]
+  ],
+  "extra": {},
+  "extra_com": {}
 }

@@ -1,0 +1,41 @@
+export const products = [
+  {
+    id: 1,
+    name: "MOTOR",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ultrices risus at urna sodales.",
+    status: true,
+    p1_price: 5000,
+    p2_price: 10000,
+    p3_price: 15000,
+    tier1: 50000,
+    tier2: 150000,
+    tier3: 250000,
+    tierStat1: true,
+    tierStat1: true,
+    tierStat1: true,
+    percent1: 0.5,
+    percent2: 2,
+    percent3: 1.5,
+  },
+  {
+    id: 2,
+    name: "RENEWAL",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ultrices risus at urna sodales.",
+    status: true,
+    p1_price: 10000,
+    p2_price: 20000,
+    p3_price: 30000,
+    tier1: 100000,
+    tier2: 200000,
+    tier3: 300000,
+    tierStat1: true,
+    tierStat1: true,
+    tierStat1: true,
+    percent1: 0.5,
+    percent2: 0.75,
+    percent3: 1,
+  },
+];
+export default products;

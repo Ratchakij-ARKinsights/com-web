@@ -1,0 +1,51 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "MOTOR",
+      "config": {
+        "rate": [
+          {
+            "rate_start": 50000,
+            "rate_end": 150000,
+            "percent": 0.5
+          },
+          {
+            "rate_start": 150001,
+            "rate_end": 200000,
+            "percent": 1
+          },
+          {
+            "rate_start": 200001,
+            "rate_end": 450000,
+            "percent": 1.5
+          }
+        ]
+      }
+    },
+
+    {
+      "id": 2,
+      "name": "RENEWAL",
+      "config": {
+        "rate": [
+          {
+            "rate_start": 100000,
+            "rate_end": 200000,
+            "percent": 0.4
+          },
+          {
+            "rate_start": 200001,
+            "rate_end": 300000,
+            "percent": 0.8
+          },
+          {
+            "rate_start": 300001,
+            "rate_end": 450000,
+            "percent": 1.2
+          }
+        ]
+      }
+    }
+  ]
+}

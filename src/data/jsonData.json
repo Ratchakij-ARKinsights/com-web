@@ -1,0 +1,194 @@
+{
+  "agents": [
+    {
+      "id": "A620201",
+      "img": "/img/team-2.jpeg",
+      "name": "John Michael",
+      "email": "john@creative-tim.com",
+      "job": ["Manager", "Organization"],
+      "salary": "$75K",
+      "status": true,
+      "date": "23/04/18",
+      "completion": 60,
+      "account_number": 9140190217
+    },
+    {
+      "id": "A590205",
+      "img": "/img/team-1.jpeg",
+      "name": "Alexa Liras",
+      "email": "alexa@creative-tim.com",
+      "job": ["Programmor", "Developer"],
+      "salary": "$55K",
+      "status": false,
+      "date": "11/01/19",
+      "completion": 75,
+      "account_number": "9097004304"
+    },
+    {
+      "id": "A590119",
+      "img": "/img/team-4.jpeg",
+      "name": "Laurent Perrier",
+      "email": "laurent@creative-tim.com",
+      "job": ["Executive", "Projects"],
+      "salary": "$85K",
+      "status": true,
+      "date": "19/09/17",
+      "completion": 40,
+      "account_number": "1624336259"
+    },
+    {
+      "id": "A590112",
+      "img": "/img/team-3.jpeg",
+      "name": "Michael Levi",
+      "email": "michael@creative-tim.com",
+      "job": ["Programator", "Developer"],
+      "salary": "$105K",
+      "status": true,
+      "date": "24/12/08",
+      "completion": 10,
+      "account_number": "0750292013"
+    },
+    {
+      "id": "A590702",
+      "img": "/img/bruce-mars.jpeg",
+      "name": "Bruce Mars",
+      "email": "bruce@creative-tim.com",
+      "job": ["Manager", "Executive"],
+      "salary": "$65K",
+      "status": false,
+      "date": "04/10/21",
+      "completion": 25,
+      "account_number": "0570541607"
+    },
+    {
+      "id": "A600901",
+      "img": "/img/team-2.jpeg",
+      "name": "Alexander",
+      "email": "alexander@creative-tim.com",
+      "job": ["Programator", "Developer"],
+      "salary": "$95K",
+      "status": false,
+      "date": "14/09/20",
+      "completion": 10,
+      "account_number": "9410169008"
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "img": "/img/logo-xd.svg",
+      "name": "MOTOR",
+      "members": [
+        { "img": "/img/team-1.jpeg", "name": "Romina Hadid" },
+        { "img": "/img/team-2.jpeg", "name": "Ryan Tompson" },
+        { "img": "/img/team-3.jpeg", "name": "Jessica Doe" },
+        { "img": "/img/team-4.jpeg", "name": "Alexander Smith" }
+      ],
+      "budget": "$14,000",
+      "completion": 60
+    },
+    {
+      "id": 2,
+      "img": "/img/logo-atlassian.svg",
+      "name": "RENEWAL",
+      "members": [
+        { "img": "/img/team-2.jpeg", "name": "Ryan Tompson" },
+        { "img": "/img/team-4.jpeg", "name": "Alexander Smith" }
+      ],
+      "budget": "$3,000",
+      "completion": 10
+    },
+    {
+      "id": 3,
+      "img": "/img/logo-slack.svg",
+      "name": "Extra",
+      "members": [
+        { "img": "/img/team-1.jpeg", "name": "Romina Hadid" },
+        { "img": "/img/team-2.jpeg", "name": "Ryan Tompson" },
+        { "img": "/img/team-3.jpeg", "name": "Jessica Doe" },
+        { "img": "/img/team-4.jpeg", "name": "Alexander Smith" }
+      ],
+      "budget": "Not set",
+      "completion": 10
+    },
+    {
+      "id": 4,
+      "img": "/img/logo-invision.svg",
+      "name": "Extra-Commission",
+      "members": [
+        { "img": "/img/team-1.jpeg", "name": "Romina Hadid" },
+        { "img": "/img/team-2.jpeg", "name": "Ryan Tompson" },
+        { "img": "/img/team-3.jpeg", "name": "Jessica Doe" },
+        { "img": "/img/team-4.jpeg", "name": "Alexander Smith" }
+      ],
+      "budget": "$2,000",
+      "completion": 40
+    },
+    {
+      "id": 5,
+      "img": "/img/logo-invision.svg",
+      "name": "Commission",
+      "members": [
+        { "img": "/img/team-1.jpeg", "name": "Romina Hadid" },
+        { "img": "/img/team-2.jpeg", "name": "Ryan Tompson" },
+        { "img": "/img/team-3.jpeg", "name": "Jessica Doe" },
+        { "img": "/img/team-4.jpeg", "name": "Alexander Smith" }
+      ],
+      "budget": "$2,000",
+      "completion": 40
+    },
+    {
+      "id": 6,
+      "img": "/img/logo-invision.svg",
+      "name": "Deduction",
+      "members": [
+        { "img": "/img/team-1.jpeg", "name": "Romina Hadid" },
+        { "img": "/img/team-2.jpeg", "name": "Ryan Tompson" }
+      ],
+      "budget": "$2,000",
+      "completion": 40
+    }
+  ],
+  "product-com": [
+    {
+      "name": "MOTOR",
+      "status": true,
+      "com-tier": {
+        "tier-1": 50000,
+        "tier-2": 150001,
+        "tier-3": 250001
+      },
+      "com-percent": {
+        "percent-1": 0.5,
+        "percent-2": 1,
+        "percent-3": 1.5
+      }
+    },
+    {
+      "name": "RENEWAL",
+      "status": false,
+      "com-tier": {
+        "tier-1": 100000,
+        "tier-2": 200001,
+        "tier-3": 300001
+      },
+      "com-percent": {
+        "percent-1": 0.2,
+        "percent-2": 0.7,
+        "percent-3": 1
+      }
+    }
+  ],
+  "extra": {
+    "exceed": 450000
+  },
+  "extra_com": {
+    "percent": 2
+  },
+  "commission": {
+    "com-percent": 2.5
+  },
+  "deduction": {
+    "hold-percent": 5
+  }
+}
