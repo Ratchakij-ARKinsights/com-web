@@ -8,9 +8,9 @@ import "./index.css";
 import "sweetalert2/src/sweetalert2.scss";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  // <React.StrictMode>
+  <React.StrictMode>
     <AuthContextProvider>
       <App />
     </AuthContextProvider>
-  // </React.StrictMode>
+  </React.StrictMode>
 );

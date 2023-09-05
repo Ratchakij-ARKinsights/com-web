@@ -3,13 +3,13 @@ import { useEffect } from "react";
 
 export default function AgentList({ employees }) {
   // console.log(employees);
-  const tableHead = ["id", "name", "title", "type", "leaderId"];
+  const tableHead = ["id", "name", "title", "type", "leader-Id"];
 
   return (
     <div>
       <Card>
         {/* Card Header */}
-        <CardHeader className="mb-8 p-4" variant="gradient" color="blue">
+        <CardHeader className="m-2 p-2" variant="gradient" color="blue">
           <Typography variant="h6" color="white">
             Employee Member
           </Typography>

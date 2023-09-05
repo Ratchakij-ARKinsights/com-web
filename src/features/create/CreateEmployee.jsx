@@ -13,7 +13,7 @@ const initialInput = {
   type: "",
   leaderId: "",
 };
-export default function CreateEmployee({ onSuccess, createEmployee, setEmployees }) {
+export default function CreateEmployee({ createEmployee }) {
   const [input, setInput] = useState(initialInput);
   const [error, setError] = useState({});
 
@@ -35,7 +35,7 @@ export default function CreateEmployee({ onSuccess, createEmployee, setEmployees
       <h1 className="block uppercase tracking-wide text-gray-700 text-lg font-bold mb-2">Create Employee</h1>
       <div className="flex mb-2 ">
         {/* CODE */}
-        {/* <div className="w-full px-3 mb-6 md:mb-0">
+        {/* <div className="w-full px-2 mb-6 md:mb-0">
           <h1 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Agent Code</h1>
           <input
             className="block w-full bg-gray-200 text-gray-700 border border-gray-500 rounded py-1 px-1 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
@@ -48,7 +48,7 @@ export default function CreateEmployee({ onSuccess, createEmployee, setEmployees
         </div> */}
 
         {/* NAME */}
-        <div className="w-full md:w-1/3 px-3 mb-3 md:mb-0">
+        <div className="w-full md:w-1/3 px-2 mb-3 md:mb-0">
           <h1 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Name</h1>
           <input
             className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-500 rounded py-1 px-1 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
@@ -61,7 +61,7 @@ export default function CreateEmployee({ onSuccess, createEmployee, setEmployees
         </div>
 
         {/* TITLE */}
-        <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+        <div className="w-full md:w-1/3 px-2 mb-6 md:mb-0">
           <h1 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">TITLE</h1>
           <div className="relative">
             <select
@@ -82,7 +82,7 @@ export default function CreateEmployee({ onSuccess, createEmployee, setEmployees
 
         {/*Type */}
         {}
-        <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+        <div className="w-full md:w-1/3 px-2 mb-6 md:mb-0">
           <h1 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Type</h1>
           <div className="relative">
             <select
@@ -102,7 +102,7 @@ export default function CreateEmployee({ onSuccess, createEmployee, setEmployees
         </div>
 
         {/* LEADER ID */}
-        <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+        <div className="w-full md:w-1/3 px-2 mb-6 md:mb-0">
           <h1 className="w-2rem block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Leader ID</h1>
           <input
             className="block w-full bg-gray-200 text-gray-700 border border-gray-500 rounded py-1 px-1 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
@@ -116,7 +116,7 @@ export default function CreateEmployee({ onSuccess, createEmployee, setEmployees
       </div>
       {/* BUTTON */}
       <div className="pt-2 flex justify-center w-full  ">
-        <Button variant="filled" color="green" size="sm" onClick={handleSubmitForm}>
+        <Button variant="filled" color="blue" size="sm" onClick={handleSubmitForm}>
           ADD
         </Button>
       </div>
