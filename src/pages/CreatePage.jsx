@@ -65,12 +65,12 @@ export default function CreatePage() {
   return (
     <div className="max-w-[100rem] mx-auto py-6 sm:px-6 lg:px-8 mt-8 mb-8 flex flex-col gap-12">
       <div className="flex justify-evenly md:justify-center">
-        <div className="flex flex-col w-[45rem]">
+        <div className="flex flex-col w-full md:w-1/2">
           <CreateEmployee createEmployee={createEmployee} />
           <EmployeeList employees={employees} />
         </div>
 
-        <div className="flex flex-col w-[45rem]">
+        <div className="flex flex-col w-full md:w-1/2">
           <CreateOrder employees={employees} fetchOrder={fetchOrder} onSuccess={onSuccess} onError={onError} />
           <OrderList orders={orders} />
         </div>

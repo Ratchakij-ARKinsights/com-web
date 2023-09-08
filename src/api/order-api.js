@@ -3,6 +3,7 @@ import axios from "./axios";
 export const createOrder = (input) => axios.post("/order", input);
 
 export const getAllOrder = () => axios.get("/order");
+export const getTotalPriceByAgentId = () => axios.get("/order/total-price-by-agent");
 
 // การใช้ axios.post จะส่งข้อมูลที่คุณระบุไปยัง URL ที่กำหนดด้วยเมธอด HTTP POST และรับข้อมูลที่เซิร์ฟเวอร์ส่งกลับมาในรูปแบบของ response.data
 // export const register = input => axios.post('/auth/register', input);

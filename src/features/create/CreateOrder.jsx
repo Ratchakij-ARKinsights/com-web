@@ -59,6 +59,7 @@ export default function CreateOrder({ employees, fetchOrder, onSuccess, onError 
             inputClassName="w-full bg-gray-200 border border-gray-500 text-gray-700 py-1 px-1 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             asSingle={true}
             useRange={false}
+            popoverDirection={"down"}
             displayFormat={"DD/MM/YYYY"}
             name="date"
             value={date}

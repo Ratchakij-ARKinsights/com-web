@@ -1,54 +1,47 @@
 import { Typography } from "@material-tailwind/react";
+import { useState } from "react";
 
-const TABLE_HEAD = ["Tier", "acq", "Rate", "%", "Amount"];
+const TABLE_HEAD = ["tmr", "tarp", "commission"];
 
-function RateRow({ rate, isLast }) {
-  const classes = isLast ? "p-2.5" : "p-2.5 border-b border-blue-gray-50";
+function RateRow({ comTier, rowData, isLast }) {
+  const classes = isLast ? "py-2.5" : "py-2.5 border-b border-blue-gray-50";
 
+  const tmr = (rowData.Total * comTier.rateStart).toLocaleString("en-US");
+  const com = (rowData.Total * comTier.amount).toLocaleString("en-US");
   return (
     <tr>
       <td className={classes}>
         <Typography variant="small" color="blue-gray" className="font-semibold">
-          TIER {rate.tierLevel}
+          {rowData.Total}
         </Typography>
       </td>
       <td className={classes}>
         <Typography variant="small" color="blue-gray" className="font-semibold">
-          &gt;=
+          {tmr == 0 ? "-" : tmr}
         </Typography>
       </td>
       <td className={classes}>
         <Typography variant="small" color="blue-gray" className="font-semibold">
-          {rate.rateStart.toLocaleString("en-US")}
-        </Typography>
-      </td>
-      <td className={classes}>
-        <Typography variant="small" color="blue-gray" className="font-semibold">
-          {rate.percent}%
-        </Typography>
-      </td>
-      <td className={classes}>
-        <Typography variant="small" color="blue-gray" className="font-semibold">
-          {rate.amount.toLocaleString("en-US")}
+          {com == 0 ? "-" : com}
         </Typography>
       </td>
     </tr>
   );
 }
 
-export default function RateTable({ comTier }) {
+export default function TarpProjection({ comTier, tableData }) {
   return (
     <div className="bg-white border border-blue-gray-100">
       <div className="w-auto text-center bg-blue-500 opacity-95">
         <Typography variant="h4" color="blue-gray">
-          Commission Tier
+          TARP Projection
         </Typography>
       </div>
-      <table className="w-full min-w-max table-auto text-center">
+      <table className="w-full min-w-max table-auto text-center ">
         <thead>
           <tr>
             {TABLE_HEAD.map((head) => (
-              <th key={head} className="border-b uppercase border-blue-gray-100 bg-blue-gray-50 p-4">
+              <th key={head} className="uppercase border-b border-blue-gray-100 bg-blue-gray-50 p-4">
                 <Typography variant="small" color="blue-gray" className="font-extrabold leading-none">
                   {head}
                 </Typography>
@@ -57,8 +50,8 @@ export default function RateTable({ comTier }) {
           </tr>
         </thead>
         <tbody>
-          {comTier?.map((rate, index) => (
-            <RateRow key={index} rate={rate} isLast={index === comTier.length - 1} />
+          {tableData?.map((rowData, index) => (
+            <RateRow key={index} comTier={comTier[index]} rowData={rowData} isLast={index === tableData.length - 1} />
           ))}
         </tbody>
       </table>

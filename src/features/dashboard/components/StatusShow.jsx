@@ -35,7 +35,7 @@ const statsData = [
 export default function StatusShow() {
   return (
     <>
-      <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
+      <div className="grid gap-2 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 justify-center items-center">
         {statsData.map((d, k) => {
           return <StatusCard key={k} {...d} colorIndex={k} />;
         })}
