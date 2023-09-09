@@ -1,13 +1,13 @@
 import { Typography } from "@material-tailwind/react";
-import { useState } from "react";
 
 const TABLE_HEAD = ["tmr", "tarp", "commission"];
 
 function RateRow({ comTier, rowData, isLast }) {
   const classes = isLast ? "py-2.5" : "py-2.5 border-b border-blue-gray-50";
 
-  const tmr = (rowData.Total * comTier.rateStart).toLocaleString("en-US");
-  const com = (rowData.Total * comTier.amount).toLocaleString("en-US");
+  const tmr = (rowData.Total * rowData.Rate).toLocaleString("en-US");
+  const com = (rowData.Total * rowData.Amount).toLocaleString("en-US");
+
   return (
     <tr>
       <td className={classes}>
@@ -29,7 +29,7 @@ function RateRow({ comTier, rowData, isLast }) {
   );
 }
 
-export default function TarpProjection({ comTier, tableData }) {
+export default function TarpProjection({ comTier, tableData, agentTypeByComTier }) {
   return (
     <div className="bg-white border border-blue-gray-100">
       <div className="w-auto text-center bg-blue-500 opacity-95">
@@ -50,7 +50,7 @@ export default function TarpProjection({ comTier, tableData }) {
           </tr>
         </thead>
         <tbody>
-          {tableData?.map((rowData, index) => (
+          {agentTypeByComTier?.map((rowData, index) => (
             <RateRow key={index} comTier={comTier[index]} rowData={rowData} isLast={index === tableData.length - 1} />
           ))}
         </tbody>

@@ -8,24 +8,40 @@ export default function CardShow() {
       {/* HEADER */}
       <CardHeader className="w-auto text-center bg-yellow-500">
         <Typography variant="h4" color="blue-gray">
-          COMMISSION
+          OVERALL
         </Typography>
       </CardHeader>
       {/* BODY */}
-      <CardBody className="h-[6rem] p-4">
+      <CardBody className="p-4">
         <div className="flex justify-between items-center">
           <Typography variant="small" className="font-extrabold" color="blue-gray">
-            TOTAL
+            TMR
+          </Typography>
+          <Typography variant="h4" className="w-[6rem] text-center" color="blue-gray">
+            50
+          </Typography>
+        </div>
+        <div className="flex justify-between items-center">
+          <Typography variant="small" className="font-extrabold" color="blue-gray">
+            COMMISSION
+          </Typography>
+          <Typography variant="h4" className="w-[6rem] text-center" color="blue-gray">
+            $102k
+          </Typography>
+        </div>
+        <div className="flex justify-between items-center">
+          <Typography variant="small" className="font-extrabold" color="blue-gray">
+            TARP
           </Typography>
           <Typography variant="h4" className="w-[6rem] text-center" color="blue-gray">
             $102k
           </Typography>
         </div>
       </CardBody>
-      <CardFooter className="flex justify-between border-t border-blue-gray-50 p-2">
-        <Typography className="font-normal text-blue-gray-600">
-       Percent...
-          <strong className="ml-2 font-bold">2%</strong>
+      <CardFooter className="flex justify-between items-center border-t border-blue-gray-50 p-2">
+        <Typography variant="small" className="h-fit text-blue-gray-600">
+          Com vs. TARP
+          <strong className="ml-2 font-bold">9.22%</strong>
         </Typography>
         <Button variant="outlined" size="sm">
           Preview

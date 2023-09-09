@@ -1,19 +1,21 @@
 import { Typography } from "@material-tailwind/react";
 import React from "react";
 
-export default function TmrAssumption({ tableData, totalType }) {
+export default function TmrAssumption({ agentTypeByComTier, totalAgentAndSale }) {
   const TABLE_HEAD = ["New", "Ex", "Top"];
-  const TABLE_HEAD_TOTAL = [totalType.New, totalType.Experience, totalType.Top];
-  // console.log(tableData);
+  const TABLE_HEAD_TOTAL = [
+    totalAgentAndSale.New.totalType,
+    totalAgentAndSale.Experience.totalType,
+    totalAgentAndSale.Top.totalType,
+  ];
 
   return (
     <div className="bg-white border border-blue-gray-100">
-       <div className="w-auto text-center bg-blue-500 opacity-95">
+      <div className="w-auto text-center bg-blue-500 opacity-95">
         <Typography variant="h4" color="blue-gray">
           TMR Assumption
         </Typography>
       </div>
-      {/* {totalType.Total} */}
       <table className="w-full min-w-max table-auto text-center">
         <thead>
           <tr>
@@ -36,7 +38,7 @@ export default function TmrAssumption({ tableData, totalType }) {
           </tr>
         </thead>
         <tbody>
-          {tableData.map((rowData, index) => (
+          {agentTypeByComTier.map((rowData, index) => (
             <tr key={index}>
               {/* <td className="py-2.5 border-b border-blue-gray-50">
                 <Typography variant="small" color="blue-gray" className="font-semibold">
