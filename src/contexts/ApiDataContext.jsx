@@ -12,7 +12,7 @@ export default function ApiDataContextProvider({ children }) {
   const [orders, setOrders] = useState([]);
   const [sumOrderAgent, setSumOrderAgent] = useState(null);
   const [sumOrderAgentByRange, setSumOrderAgentByRange] = useState(null);
-
+  console.log(comTier);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -28,7 +28,7 @@ export default function ApiDataContextProvider({ children }) {
         setOrders(orderResponse.data.orders);
         setSumOrderAgent(sumResponse.data.totalPriceByAgentId);
       } catch (err) {
-       console.log(err);
+        console.log(err);
       }
     };
 
@@ -42,7 +42,7 @@ export default function ApiDataContextProvider({ children }) {
 
   return (
     <ApiDataContext.Provider
-      value={{ comTier, employees, orders, sumOrderAgent, sumOrderAgentByRange, getSumOrderByRange }}
+      value={{ comTier, setComTier, employees, orders, sumOrderAgent, sumOrderAgentByRange, getSumOrderByRange }}
     >
       {children}
     </ApiDataContext.Provider>

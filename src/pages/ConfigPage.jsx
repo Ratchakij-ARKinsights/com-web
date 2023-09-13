@@ -7,10 +7,13 @@ import Modal from "../components/Modal";
 import EditComTier from "../features/config/EditComTier";
 
 export default function ConfigPage() {
-  const { comTier, sumOrderAgentByRange, getSumOrderByRange } = useApiData();
+  const { comTier, setComTier } = useApiData();
   const [open, setOpen] = useState(false);
-  console.log(typeof comTier[0].percent + " " + comTier[0].percent);
-  // console.log(JSON.stringify(comTier));
+
+  const onUpdateComTier = (updatedComTier) => {
+    setComTier(updatedComTier); // อัปเดต state ของ ComTier ด้วยข้อมูลใหม่
+  };
+
   return (
     <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 mt-8 mb-8 flex flex-col gap-12">
       <header className="bg-white shadow ">
@@ -35,7 +38,9 @@ export default function ConfigPage() {
         </div>
       </div>
       <Modal title="Config Commission Tier" open={open} onClose={() => setOpen(false)}>
-        <EditComTier comTier={comTier} />
+        {comTier?.map((item, index) => (
+          <EditComTier key={index} comTier={item} index={index} onUpdateComTier={onUpdateComTier} />
+        ))}
       </Modal>
       <div className="mb-8 p-6">
         <ProductConfig />

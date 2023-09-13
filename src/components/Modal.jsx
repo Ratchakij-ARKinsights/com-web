@@ -11,15 +11,15 @@ export default function Modal({ title, children, width = 27, open, onClose }) {
       document.body.style.overflow = ""; // กำหนดให้ body เลื่อนได้เมื่อโมเดลปิด
     }
   }, [open]);
-  
+
   // ใช้ createPortal เพื่อแสดงโมเดลที่ต้องการ
   return createPortal(
     <>
       {open && ( // คำสั่ง open && (...) ใช้ในการตรวจสอบว่าโมเดลควรถูกแสดงหรือไม่ หาก open เป็น true จะแสดงโมเดล
         <>
-
           <div className="fixed inset-0 bg-white opacity-70 z-20"></div>
-          <div className="fixed inset-0 z-30" onMouseUp={onClose}>  {/* กำหนดการปิดโมเดลเมื่อคลิกที่พื้นหลัง */}
+          <div className="fixed inset-0 z-30" onMouseUp={onClose}>
+            {/* กำหนดการปิดโมเดลเมื่อคลิกที่พื้นหลัง */}
             <div className="flex justify-center items-center min-h-full p-4">
               <div
                 style={{ maxWidth: `${width}rem` }}
