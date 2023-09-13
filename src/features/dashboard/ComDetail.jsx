@@ -1,7 +1,7 @@
 import TarpProjection from "./TARPProjection";
 import TmrAssumption from "./TmrAssumption";
 
-export default function ComDetail({ comTier, tableData, agentTypeByComTier, totalAgentAndSale }) {
+export default function ComDetail({ agentTypeByComTier, totalAgentAndSale }) {
   return (
     <>
       <div className="w-full h-full flex">
@@ -9,7 +9,7 @@ export default function ComDetail({ comTier, tableData, agentTypeByComTier, tota
           <TmrAssumption agentTypeByComTier={agentTypeByComTier} totalAgentAndSale={totalAgentAndSale} />
         </div>
         <div className="w-1/2 flex flex-col">
-          <TarpProjection comTier={comTier} tableData={tableData} agentTypeByComTier={agentTypeByComTier} />
+          <TarpProjection agentTypeByComTier={agentTypeByComTier} />
         </div>
       </div>
     </>

@@ -4,9 +4,9 @@ import React from "react";
 export default function TmrAssumption({ agentTypeByComTier, totalAgentAndSale }) {
   const TABLE_HEAD = ["New", "Ex", "Top"];
   const TABLE_HEAD_TOTAL = [
-    totalAgentAndSale.New.totalType,
-    totalAgentAndSale.Experience.totalType,
-    totalAgentAndSale.Top.totalType,
+    totalAgentAndSale[0].New.totalType,
+    totalAgentAndSale[0].Experience.totalType,
+    totalAgentAndSale[0].Top.totalType,
   ];
 
   return (

@@ -2,13 +2,13 @@ import { Card, CardHeader, CardBody, CardFooter, Typography, Button } from "@mat
 import { BanknotesIcon, UserPlusIcon, UserIcon, ChartBarIcon } from "@heroicons/react/24/solid";
 
 const footer = { color: "text-green-500", value: "+15%", label: "than last month" };
-export default function CardShow() {
+export default function CardOne() {
   return (
     <Card>
       {/* HEADER */}
       <CardHeader className="w-auto text-center bg-green-500">
         <Typography variant="h4" color="blue-gray">
-          MOTOR
+          1
         </Typography>
       </CardHeader>
       {/* BODY */}
@@ -35,7 +35,9 @@ export default function CardShow() {
           <strong className={footer.color}>{footer.value}</strong>
           &nbsp;{footer.label}
         </Typography>
-        <Button variant="outlined" size="sm">Preview</Button>
+        <Button variant="outlined" size="sm">
+          Preview
+        </Button>
       </CardFooter>
     </Card>
   );

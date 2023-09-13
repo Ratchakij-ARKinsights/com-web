@@ -1,12 +1,13 @@
 import { Typography } from "@material-tailwind/react";
+import { useEffect } from "react";
 
 const TABLE_HEAD = ["tmr", "tarp", "commission"];
 
-function RateRow({ comTier, rowData, isLast }) {
+function RateRow({ rowData, isLast }) {
   const classes = isLast ? "py-2.5" : "py-2.5 border-b border-blue-gray-50";
 
-  const tmr = (rowData.Total * rowData.Rate).toLocaleString("en-US");
-  const com = (rowData.Total * rowData.Amount).toLocaleString("en-US");
+  const tarp = (rowData.Total * rowData.Rate).toLocaleString("en-US");
+  const commission = (rowData.Total * rowData.Amount).toLocaleString("en-US");
 
   return (
     <tr>
@@ -17,19 +18,19 @@ function RateRow({ comTier, rowData, isLast }) {
       </td>
       <td className={classes}>
         <Typography variant="small" color="blue-gray" className="font-semibold">
-          {tmr == 0 ? "-" : tmr}
+          {tarp == 0 ? "-" : tarp}
         </Typography>
       </td>
       <td className={classes}>
         <Typography variant="small" color="blue-gray" className="font-semibold">
-          {com == 0 ? "-" : com}
+          {commission == 0 ? "-" : commission}
         </Typography>
       </td>
     </tr>
   );
 }
 
-export default function TarpProjection({ comTier, tableData, agentTypeByComTier }) {
+export default function TarpProjection({ agentTypeByComTier }) {
   return (
     <div className="bg-white border border-blue-gray-100">
       <div className="w-auto text-center bg-blue-500 opacity-95">
@@ -51,7 +52,7 @@ export default function TarpProjection({ comTier, tableData, agentTypeByComTier 
         </thead>
         <tbody>
           {agentTypeByComTier?.map((rowData, index) => (
-            <RateRow key={index} comTier={comTier[index]} rowData={rowData} isLast={index === tableData.length - 1} />
+            <RateRow key={index} rowData={rowData} isLast={index === agentTypeByComTier.length - 1} />
           ))}
         </tbody>
       </table>

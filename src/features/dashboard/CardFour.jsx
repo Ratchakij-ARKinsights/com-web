@@ -2,7 +2,7 @@ import { Card, CardHeader, CardBody, CardFooter, Typography, Button } from "@mat
 import { BanknotesIcon, UserPlusIcon, UserIcon, ChartBarIcon } from "@heroicons/react/24/solid";
 
 const footer = { color: "text-green-500", value: "+55%", label: "than last week" };
-export default function CardShow() {
+export default function CardFour({ totalTarp }) {
   return (
     <Card>
       {/* HEADER */}
@@ -13,36 +13,32 @@ export default function CardShow() {
       </CardHeader>
       {/* BODY */}
       <CardBody className="p-4">
-        <div className="flex justify-between items-center">
-          <Typography variant="small" className="font-extrabold" color="blue-gray">
-            TMR
-          </Typography>
-          <Typography variant="h4" className="w-[6rem] text-center" color="blue-gray">
-            50
-          </Typography>
-        </div>
-        <div className="flex justify-between items-center">
-          <Typography variant="small" className="font-extrabold" color="blue-gray">
-            COMMISSION
-          </Typography>
-          <Typography variant="h4" className="w-[6rem] text-center" color="blue-gray">
-            $102k
-          </Typography>
-        </div>
-        <div className="flex justify-between items-center">
-          <Typography variant="small" className="font-extrabold" color="blue-gray">
-            TARP
-          </Typography>
-          <Typography variant="h4" className="w-[6rem] text-center" color="blue-gray">
-            $102k
-          </Typography>
-        </div>
+        {Object.entries(totalTarp[0].tarpSum).map(([key, value], index) => {
+          const className = `mb-2 flex justify-between items-center ${
+            index === Object.keys(totalTarp[0].tarpSum).length - 1 ? "" : "border-b"
+          }`;
+          return (
+            <div key={index} className={className}>
+              <div className="w-1/3 uppercase font-normal">
+                <Typography variant="h6" color="blue-gray">
+                  {key}
+                </Typography>
+              </div>
+              <div className="w-full text-end">
+                <Typography variant="h5" color="blue-gray">
+                  {value.toLocaleString("en-US")}
+                </Typography>
+              </div>
+            </div>
+          );
+        })}
       </CardBody>
       <CardFooter className="flex justify-between items-center border-t border-blue-gray-50 p-2">
         <Typography variant="small" className="h-fit text-blue-gray-600">
-          Com vs. TARP
-          <strong className="ml-2 font-bold">9.22%</strong>
+          {Object.keys(totalTarp[1])}
+          <strong className="ml-2 font-bold">{parseFloat(Object.values(totalTarp[1])).toFixed(2)}%</strong>
         </Typography>
+
         <Button variant="outlined" size="sm">
           Preview
         </Button>

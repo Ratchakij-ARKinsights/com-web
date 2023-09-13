@@ -1,40 +1,18 @@
-import React, { useState } from "react";
-import Datepicker from "react-tailwindcss-datepicker";
+import React from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
-export default function DatePicker() {
-  const [value, setValue] = useState({
-    startDate: null ,
-    endDate: null 
-  });
-
-  const handleValueChange = (newValue) => {
-    console.log("newValue:", newValue);
-    setValue(newValue);
-  };
-
+function CustomDatePicker({ selected, onChange, placeholderText }) {
   return (
-    <div className="flex gap-4">
-      <h1>DATE: </h1>
-      <Datepicker
-        containerClassName="w-72 "
-        value={value}
-        theme={"light"}
-        inputClassName="input input-bordered w-72"
-        popoverDirection={"down"}
-        toggleClassName="invisible"
-        onChange={handleValueChange}
-        showShortcuts={true}
-        primaryColor={"white"}
-      />
-      {/* <SelectBox
-        options={periodOptions}
-        labelTitle="Period"
-        placeholder="Select date range"
-        containerStyle="w-72"
-        labelStyle="hidden"
-        defaultValue="TODAY"
-        updateFormValue={updateSelectBoxValue}
-      /> */}
-    </div>
+    <DatePicker
+      selected={selected}
+      onChange={onChange}
+      placeholderText={placeholderText}
+      dateFormat="MM-yyyy"
+      showMonthYearPicker
+      isClearable
+    />
   );
 }
+
+export default CustomDatePicker;

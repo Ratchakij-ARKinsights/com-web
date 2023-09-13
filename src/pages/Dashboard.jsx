@@ -1,137 +1,38 @@
-import React, { useEffect, useState } from "react";
-import Datepicker from "react-tailwindcss-datepicker";
-import ComDetail from "../features/dashboard/ComDetail";
-import DashboardMain from "../features/dashboard/DashboardMain";
+import React, { forwardRef, useEffect, useState } from "react";
+import { Button, Typography } from "@material-tailwind/react";
+
+import DatePicker from "../components/DatePicker";
+import Statistic from "../features/dashboard/Statistic";
 import RateTable from "../features/dashboard/RateTable";
+import ComDetail from "../features/dashboard/ComDetail";
 import StatusShow from "../features/dashboard/StatusShow";
 
+import { processComTier, getTotalTarp } from "../features/dashboard/dashboardUtils/processComTier";
 import * as comTierApi from "../api/comTier-api";
 import * as employeeApi from "../api/employee-api";
 import * as orderApi from "../api/order-api";
+import InputErrorMessage from "../features/auth/components/InputErrorMessage";
+
+import validateInputDate from "../features/dashboard/validators/validate-inputDate";
 
 export default function HomePage() {
+  const [error, setError] = useState({});
   const [comTier, setComTier] = useState(null);
   const [employees, setEmployees] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [sumOrderByAgent, setSumOrderByAgent] = useState(null);
+  const [sumOrderAgent, setSumOrderByAgent] = useState(null);
+  const [sumOrderAgentByRange, setTotalOrderByAgent] = useState(null);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [selectedStartDate, setSelectedStartDate] = useState();
+  const [selectedEndDate, setSelectedEndDate] = useState();
+  // console.log(selectedStartDate);
+  // console.log(selectedEndDate);
+  // console.log(sumOrderAgent);
+  // console.log(sumOrderAgentByRange);
 
-  // console.log(JSON.stringify(agentTypeByComTier));
-  // console.log(agentTypeByComTier);
-  // console.log(totalAgentAndSale);
-
-  // const [agentTypeByComTier, setAgentTypeByComTier] = useState({});
-  // const [totalSumByType, setTotalSumByType] = useState({});
-  const { agentTypeByComTier, totalAgentAndSale } = processComTier(comTier, sumOrderByAgent);
-  console.log(agentTypeByComTier);
-  console.log(totalAgentAndSale);
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  function processComTier(comTier, sumOrderByAgent) {
-    const processedAgentIds = new Set();
-
-    const agentTypeByComTier = [];
-    const totalAgentAndSale = {
-      New: { totalType: 0, totalSale: 0 },
-      Experience: { totalType: 0, totalSale: 0 },
-      Top: { totalType: 0, totalSale: 0 },
-      Total: { totalType: 0, totalSale: 0 },
-    };
-    comTier?.forEach((tier) => {
-      const { tierLevel, rateStart, amount } = tier;
-      const tieredAgentTypes = {
-        New: 0,
-        Experience: 0,
-        Top: 0,
-        Total: 0, // TMR
-        Rate: 0,
-        Amount: 0,
-      };
-
-      sumOrderByAgent.forEach((agent) => {
-        if (processedAgentIds.has(agent.agentId)) {
-          return;
-        }
-        if ((tierLevel <= 1 && agent.agentType === "Experience") || (tierLevel <= 2 && agent.agentType === "Top")) {
-          processedAgentIds.add(agent.agentId);
-          return;
-        }
-
-        if (agent.sumPrice >= rateStart) {
-          // แยกประเภทของตัวแทนในแต่ละ ComTier
-          // tieredAgentTypes[agent.agentType].push(agent);
-          tieredAgentTypes[agent.agentType]++;
-          tieredAgentTypes.Total++;
-
-          // คำนวณผลรวมของแต่ละประเภททั้งหมด
-          totalAgentAndSale[agent.agentType].totalType++;
-          totalAgentAndSale[agent.agentType].totalSale += parseInt(agent.sumPrice, 10);
-          totalAgentAndSale.Total.totalType++;
-          totalAgentAndSale.Total.totalSale += parseInt(agent.sumPrice, 10);
-
-          processedAgentIds.add(agent.agentId);
-        }
-      });
-
-      // เก็บผลลัพธ์ของแต่ละ ComTier
-      agentTypeByComTier.push({
-        ...tieredAgentTypes,
-        tierLevel: tierLevel,
-        Rate: rateStart,
-        Amount: amount,
-      });
-    });
-
-    return { agentTypeByComTier, totalAgentAndSale };
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  function getAgentTypeByTier(comTier, sumOrderByAgent) {
-    const processedAgentIds = new Set(); // เปลี่ยนให้เป็น Set เพื่อให้การตรวจสอบเร็วขึ้น
-    const tableData = [];
-
-    comTier?.forEach((tier) => {
-      const { tierLevel, rateStart } = tier;
-
-      const filteredAgents = sumOrderByAgent.filter((agent) => {
-        if (processedAgentIds.has(agent.agentId)) {
-          return false;
-        }
-        if ((tierLevel <= 1 && agent.agentType === "Experience") || (tierLevel <= 2 && agent.agentType === "Top")) {
-          return false;
-        }
-
-        if (agent.sumPrice >= rateStart) {
-          processedAgentIds.add(agent.agentId);
-          return true; // เลือกตัวแทน Agent
-        }
-        return false; // ไม่เลือกตัวแทน Agent
-      });
-
-      const agentCountByType = {
-        New: 0,
-        Experience: 0,
-        Top: 0,
-        Total: 0,
-      };
-
-      filteredAgents.forEach((agent) => {
-        agentCountByType[agent.agentType]++;
-        agentCountByType.Total++;
-      });
-
-      tableData.push({
-        rateStart,
-        ...agentCountByType,
-        agentTotal: agentCountByType.Total,
-        tierLevel: tierLevel,
-      });
-    });
-    return tableData;
-  }
-  const tableData = getAgentTypeByTier(comTier, sumOrderByAgent);
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  const { agentTypeByComTier, totalAgentAndSale } = processComTier(comTier, sumOrderAgentByRange);
+  const totalTarp = getTotalTarp(agentTypeByComTier);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -147,53 +48,127 @@ export default function HomePage() {
         setEmployees(employeeResponse.data.employees);
         setOrders(orderResponse.data.orders);
         setSumOrderByAgent(sumResponse.data.totalPriceByAgentId);
+
+        const dateNow = {
+          startDate: new Date(),
+          endDate: new Date(),
+        };
+        const month = dateNow.startDate.toLocaleString("en-US", { month: "long" });
+        const year = dateNow.startDate.getFullYear();
+
+        const res = await orderApi.getSumOrderByRange(dateNow);
+        setTotalOrderByAgent(res.data.sumOrderAgentByRange);
+        setSelectedStartDate({ month, year });
+        setSelectedEndDate({ month, year });
       } catch (err) {
-        console.error("เกิดข้อผิดพลาดในการเรียกข้อมูล:", err);
+        setError({
+          date: err?.message ?? "Invalid",
+        });
       }
     };
 
-    // const calculateData = () => {
-    //   try {
-
-    //     // setAgentTypeByComTier(agentTypeByComTier);
-    //     // setTotalSumByType(totalSumByType);
-    //   } catch (err) {
-    //     console.log(err);
-    //   }
-    // };
-
     fetchData();
-    // calculateData();
   }, []);
+
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      const input = { startDate, endDate };
+      const result = validateInputDate(input);
+      if (result) {
+        return setError(result);
+      }
+      setError({});
+      // if (!startDate) {
+      //   throw new Error("Invalid start date");
+      // }
+      // if (!endDate) {
+      //   throw new Error("Invalid end date");
+      // }
+      const dataToSend = {
+        startDate,
+        endDate,
+      };
+
+      const formatDate = (date) => {
+        if (date) {
+          const month = date.toLocaleString("en-US", { month: "long" });
+          const year = date.getFullYear();
+          return { month, year };
+        }
+        return null;
+      };
+
+      setSelectedStartDate(formatDate(startDate));
+      setSelectedEndDate(formatDate(endDate));
+
+      const res = await orderApi.getSumOrderByRange(dataToSend);
+      setTotalOrderByAgent(res.data.sumOrderAgentByRange);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  function getDisplayText(selectedStartDate, selectedEndDate) {
+    if (!selectedStartDate || !selectedEndDate) {
+      return "";
+    }
+
+    const startMonth = selectedStartDate.month;
+    const startYear = selectedStartDate.year;
+    const endMonth = selectedEndDate.month;
+    const endYear = selectedEndDate.year;
+
+    if (startYear === endYear) {
+      return startMonth === endMonth ? `${endMonth} ${endYear}` : `${startMonth} - ${endMonth} ${endYear}`;
+    }
+    return `${startMonth} ${startYear} - ${endMonth} ${endYear}`;
+  }
+  const displayText = getDisplayText(selectedStartDate, selectedEndDate);
   return (
     <div className="max-w-7xl mx-auto py-6 md:px-6 md:flex-col sm:px-6 sm:flex-col lg:px-8 mt-8 mb-8 flex flex-col gap-4 border-2 border-blue-gray-500">
-      <div className="flex justify-center">
-        <div className="h-[2rem] w-1/3">
-          <Datepicker
-            inputClassName="w-full bg-gray-100 border border-gray-500 text-gray-700 py-1 px-1 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-            type="yearmonth"
-            includeDay={false}
-            popoverDirection="down"
-            name="date"
-            value=""
-          />
+      <div className="px-2 flex justify-between items-center ">
+        {selectedStartDate && selectedEndDate && (
+          <div className="w-full text-center">
+            <Typography variant="h3" color="blue-gray">
+              {displayText}
+            </Typography>
+          </div>
+        )}
+        <div className="flex justify-evenly gap-5 items-center">
+          <div className="flex flex-col">
+            <p>
+              <InputErrorMessage message={error.startDate} />
+            </p>
+            <DatePicker
+              selected={startDate}
+              name="startDate"
+              onChange={(date) => setStartDate(date)}
+              placeholderText="Start date"
+            />
+          </div>
+          <div className="flex flex-col">
+            <p>
+              <InputErrorMessage message={error.endDate} />
+            </p>
+            <DatePicker
+              selected={endDate}
+              name="endDate"
+              onChange={(date) => setEndDate(date)}
+              placeholderText="End date"
+            />
+          </div>
+          <Button size="sm" color="blue" onClick={handleSubmit}>
+            OK
+          </Button>
         </div>
       </div>
       <div className="p-1 mt-6 border-2 border-blue-gray-500">
-        <DashboardMain />
+        <Statistic totalAgentAndSale={totalAgentAndSale} totalTarp={totalTarp} />
       </div>
       <div className="p-1 flex lg:flex-row md:flex-col sm:flex-col border border-blue-gray-500">
-        <div className="lg:w-1/3 md:w-full">
-          <RateTable comTier={comTier} />
-        </div>
-        <div className="lg:w-full">
-          <ComDetail
-            comTier={comTier}
-            tableData={tableData}
-            agentTypeByComTier={agentTypeByComTier}
-            totalAgentAndSale={totalAgentAndSale}
-          />
-        </div>
+        <RateTable comTier={comTier} />
+        <ComDetail agentTypeByComTier={agentTypeByComTier} totalAgentAndSale={totalAgentAndSale} />
       </div>
       <div className="p-1 border border-blue-gray-500">
         <StatusShow />
@@ -201,33 +176,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-// function getAgentPassTier(comTier, sumOrderByAgent) {
-//   const processedAgentIds = new Set();
-//   const filteredAgents = [];
-
-//   comTier?.forEach((tier) => {
-//     const { tierLevel, rateStart } = tier;
-
-//     const agentsInTier = sumOrderByAgent.filter((agent) => {
-//       if (processedAgentIds.has(agent.agentId)) {
-//         return false;
-//       }
-//       if ((tierLevel <= 1 && agent.agentType === "Experience") || (tierLevel <= 2 && agent.agentType === "Top")) {
-//         return false;
-//       }
-
-//       if (agent.sumPrice >= rateStart) {
-//         processedAgentIds.add(agent.agentId);
-//         return true;
-//       }
-//       return false;
-//     });
-
-//     filteredAgents.push(...agentsInTier);
-//   });
-
-//   return filteredAgents;
-// }
-// const filteredAgents = getAgentPassTier(comTier, sumOrderByAgent);
-// console.log(filteredAgents);
