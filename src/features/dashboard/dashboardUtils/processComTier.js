@@ -1,6 +1,5 @@
-export  function processComTier(comTier, sumOrderByAgent) {
+export function processComTier(comTier, sumOrderByAgent) {
   const processedAgentIds = new Set();
-
   const agentTypeByComTier = [];
   const totalAgentAndSale = [
     {
@@ -17,25 +16,23 @@ export  function processComTier(comTier, sumOrderByAgent) {
       New: 0,
       Experience: 0,
       Top: 0,
-      Total: 0, // TMR
+      Total: 0,
     };
 
     sumOrderByAgent?.forEach((agent) => {
       if (processedAgentIds.has(agent.agentId)) {
         return;
       }
+
       if ((tierLevel <= 1 && agent.agentType === "Experience") || (tierLevel <= 2 && agent.agentType === "Top")) {
         processedAgentIds.add(agent.agentId);
         return;
       }
 
       if (agent.sumPrice >= rateStart) {
-        // แยกประเภทของตัวแทนในแต่ละ ComTier
-        // tieredAgentTypes[agent.agentType].push(agent);
         tieredAgentTypes[agent.agentType]++;
         tieredAgentTypes.Total++;
 
-        // คำนวณผลรวมของแต่ละประเภททั้งหมด
         totalAgentAndSale[0][agent.agentType].totalType++;
         totalAgentAndSale[0][agent.agentType].totalSale += parseInt(agent.sumPrice, 10);
         totalAgentAndSale[1].Total.totalSale += parseInt(agent.sumPrice, 10);
@@ -46,7 +43,6 @@ export  function processComTier(comTier, sumOrderByAgent) {
 
     totalAgentAndSale[1].Total.totalType += tieredAgentTypes.Total;
 
-    // เก็บผลลัพธ์ของแต่ละ ComTier
     agentTypeByComTier.push({
       ...tieredAgentTypes,
       tierLevel: tierLevel,
@@ -58,27 +54,30 @@ export  function processComTier(comTier, sumOrderByAgent) {
   return { agentTypeByComTier, totalAgentAndSale };
 }
 
-export   function getTotalTarp(agentTypeByComTier) {
-    const totalTarp = [];
-    const tarpSum = { tmr: 0, tarp: 0, com: 0 };
-    let comVsTarp = 0;
+export function getTotalTarp(agentTypeByComTier) {
+  const totalTarp = [];
+  const tarpSum = { tmr: 0, tarp: 0, com: 0 };
+  let comVsTarp = 0;
 
-    try {
-      agentTypeByComTier?.forEach((rowData) => {
-        tarpSum.tmr += rowData.Total;
-        tarpSum.tarp += rowData.Total * rowData.Rate;
-        tarpSum.com += rowData.Total * rowData.Amount;
-      });
-      comVsTarp = (tarpSum.com / tarpSum.tarp) * 100;
+  try {
+    agentTypeByComTier?.forEach((rowData) => {
+      tarpSum.tmr += rowData.Total;
+      tarpSum.tarp += rowData.Total * rowData.Rate;
+      tarpSum.com += rowData.Total * rowData.Amount;
+    });
 
-      totalTarp.push({
-        tarpSum,
-      });
-      totalTarp.push({
-        comVsTarp: comVsTarp,
-      });
-      return totalTarp;
-    } catch (err) {
-      console.log(err);
-    }
+    comVsTarp = (tarpSum.com / tarpSum.tarp) * 100;
+
+    totalTarp.push({
+      tarpSum,
+    });
+
+    totalTarp.push({
+      comVsTarp: comVsTarp,
+    });
+
+    return totalTarp;
+  } catch (err) {
+    console.log(err);
   }
+}

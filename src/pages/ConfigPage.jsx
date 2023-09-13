@@ -1,6 +1,16 @@
+import { useState } from "react";
+import { Button } from "@material-tailwind/react";
+import useApiData from "../hooks/useApiData";
+import RateTable from "../features/dashboard/RateTable";
 import ProductConfig from "../features/product/ProductConfig";
+import Modal from "../components/Modal";
+import EditComTier from "../features/config/EditComTier";
 
 export default function ConfigPage() {
+  const { comTier, sumOrderAgentByRange, getSumOrderByRange } = useApiData();
+  const [open, setOpen] = useState(false);
+  console.log(typeof comTier[0].percent + " " + comTier[0].percent);
+  // console.log(JSON.stringify(comTier));
   return (
     <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 mt-8 mb-8 flex flex-col gap-12">
       <header className="bg-white shadow ">
@@ -16,9 +26,20 @@ export default function ConfigPage() {
         </div>
       </header>
 
-        <div className="mb-8 p-6">
-          <ProductConfig />
+      <div className="flex flex-col mb-8 p-6">
+        <RateTable comTier={comTier} />
+        <div className="flex justify-center">
+          <Button variant="gradient" className="rounded-full" onClick={() => setOpen(true)}>
+            EDIT
+          </Button>
         </div>
+      </div>
+      <Modal title="Config Commission Tier" open={open} onClose={() => setOpen(false)}>
+        <EditComTier comTier={comTier} />
+      </Modal>
+      <div className="mb-8 p-6">
+        <ProductConfig />
+      </div>
     </div>
   );
 }
