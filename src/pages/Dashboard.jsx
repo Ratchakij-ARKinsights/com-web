@@ -15,8 +15,8 @@ export default function DashBoard() {
   const [dateRange, setDateRange] = useState({
     startDate: new Date(),
     endDate: new Date(),
-    selectedStartDate: null,
-    selectedEndDate: null,
+    selectedStartDate: "",
+    selectedEndDate: "",
     error: {},
   });
 
@@ -35,36 +35,35 @@ export default function DashBoard() {
       };
       const month = dateNow.startDate.toLocaleString("en-US", { month: "long" });
       const year = dateNow.startDate.getFullYear();
-      setDateRange({
-        ...dateRange,
+      setDateRange((prevDateRange) => ({
+        ...prevDateRange,
         startDate: dateNow.startDate,
         endDate: dateNow.endDate,
         selectedStartDate: { month, year },
         selectedEndDate: { month, year },
-      });
+      }));
       getSumOrderByRange(dateNow);
     } catch (err) {
       console.log(err);
     }
   };
 
-  const handleSubmitDateRange = async (e) => {
+  const handleSubmitDateRange = async () => {
     try {
-      e.preventDefault();
       const input = { startDate: dateRange.startDate, endDate: dateRange.endDate };
       const result = validateInputDate(input);
 
       if (result) {
-        setDateRange({ ...dateRange, error: result });
+        setDateRange((prevDateRange) => ({ ...prevDateRange, error: result }));
       } else {
-        setDateRange({ ...dateRange, error: {} });
+        setDateRange((prevDateRange) => ({ ...prevDateRange, error: {} }));
         const dataToSend = { startDate: dateRange.startDate, endDate: dateRange.endDate };
         await getSumOrderByRange(dataToSend);
-        setDateRange({
-          ...dateRange,
+        setDateRange((prevDateRange) => ({
+          ...prevDateRange,
           selectedStartDate: formatDate(dateRange.startDate),
           selectedEndDate: formatDate(dateRange.endDate),
-        });
+        }));
       }
     } catch (err) {
       console.log(err);
@@ -117,7 +116,7 @@ export default function DashBoard() {
             <DatePicker
               selected={dateRange.startDate}
               name="startDate"
-              onChange={(date) => setDateRange({ ...dateRange, startDate: date })}
+              onChange={(date) => setDateRange((prevDateRange) => ({ ...prevDateRange, startDate: date }))}
               placeholderText="Start date"
             />
           </div>
@@ -128,7 +127,7 @@ export default function DashBoard() {
             <DatePicker
               selected={dateRange.endDate}
               name="endDate"
-              onChange={(date) => setDateRange({ ...dateRange, endDate: date })}
+              onChange={(date) => setDateRange((prevDateRange) => ({ ...prevDateRange, endDate: date }))}
               placeholderText="End date"
             />
           </div>

@@ -38,7 +38,7 @@ export default function TmrAssumption({ agentTypeByComTier, totalAgentAndSale })
           </tr>
         </thead>
         <tbody>
-          {agentTypeByComTier.map((rowData, index) => (
+          {agentTypeByComTier?.map((rowData, index) => (
             <tr key={index}>
               {/* <td className="py-2.5 border-b border-blue-gray-50">
                 <Typography variant="small" color="blue-gray" className="font-semibold">

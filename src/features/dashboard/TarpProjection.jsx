@@ -13,7 +13,7 @@ function RateRow({ rowData, isLast }) {
     <tr>
       <td className={classes}>
         <Typography variant="small" color="blue-gray" className="font-semibold">
-          {rowData.Total}
+          {rowData.Total == 0 ? "-" : rowData.Total}
         </Typography>
       </td>
       <td className={classes}>

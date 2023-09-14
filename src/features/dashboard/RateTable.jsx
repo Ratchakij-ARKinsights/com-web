@@ -3,7 +3,6 @@ import { Typography } from "@material-tailwind/react";
 const TABLE_HEAD = ["Tier", "acq", "Rate", "%", "Amount"];
 
 function RateRow({ rate, isLast }) {
-  console.log(rate);
   const classes = isLast ? "p-2.5" : "p-2.5 border-b border-blue-gray-50";
 
   return (

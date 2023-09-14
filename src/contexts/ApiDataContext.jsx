@@ -12,7 +12,6 @@ export default function ApiDataContextProvider({ children }) {
   const [orders, setOrders] = useState([]);
   const [sumOrderAgent, setSumOrderAgent] = useState(null);
   const [sumOrderAgentByRange, setSumOrderAgentByRange] = useState(null);
-  console.log(comTier);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -36,6 +35,10 @@ export default function ApiDataContextProvider({ children }) {
   }, []);
 
   const getSumOrderByRange = async (dataToSend) => {
+    if (!dataToSend) {
+      return;
+    }
+
     const res = await orderApi.getSumOrderByRange(dataToSend);
     setSumOrderAgentByRange(res.data.sumOrderAgentByRange);
   };
