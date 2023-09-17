@@ -12,7 +12,7 @@ export default function ProductCard({ product }) {
             <p className="text-lg text-gray-200">ID: {product.id}</p>
           </div>
           <div>
-            <Link to="">
+            <Link to="/">
               <Button size="md">EDIT</Button>
             </Link>
           </div>

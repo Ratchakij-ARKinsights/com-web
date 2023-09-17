@@ -1,17 +1,22 @@
-import React, { useEffect, useState } from "react";
 import { Button, Typography } from "@material-tailwind/react";
+import React, { useEffect, useState } from "react";
 import DatePicker from "../components/DatePicker";
+import InputErrorMessage from "../features/auth/components/InputErrorMessage";
 import ComDetail from "../features/dashboard/ComDetail";
 import RateTable from "../features/dashboard/RateTable";
 import Statistic from "../features/dashboard/Statistic";
-import StatusShow from "../features/dashboard/StatusShow";
-import InputErrorMessage from "../features/auth/components/InputErrorMessage";
-import useApiData from "../hooks/useApiData";
-import { getTotalTarp, processComTier } from "../features/dashboard/dashboardUtils/processComTier";
 import validateInputDate from "../features/dashboard/validators/validate-inputDate";
-
+import useApiData from "../hooks/useApiData";
 export default function DashBoard() {
-  const { comTier, sumOrderAgentByRange, getSumOrderByRange } = useApiData();
+  const {
+    comTier,
+    leadComTier,
+    sumOrderAgentByRange,
+    getSumOrderByRange,
+    processComTier,
+    getTotalTarp,
+    getLeadComtier,
+  } = useApiData();
   const [dateRange, setDateRange] = useState({
     startDate: new Date(),
     endDate: new Date(),
@@ -20,8 +25,10 @@ export default function DashBoard() {
     error: {},
   });
 
-  const { agentTypeByComTier, totalAgentAndSale } = processComTier(comTier, sumOrderAgentByRange);
+  const { agentTypeByComTier, totalAgentAndSale } = processComTier(sumOrderAgentByRange);
   const totalTarp = getTotalTarp(agentTypeByComTier);
+
+  const leadCom = getLeadComtier(totalTarp);
 
   useEffect(() => {
     fetchRangeDefault();
@@ -35,6 +42,7 @@ export default function DashBoard() {
       };
       const month = dateNow.startDate.toLocaleString("en-US", { month: "long" });
       const year = dateNow.startDate.getFullYear();
+
       setDateRange((prevDateRange) => ({
         ...prevDateRange,
         startDate: dateNow.startDate,
@@ -42,6 +50,7 @@ export default function DashBoard() {
         selectedStartDate: { month, year },
         selectedEndDate: { month, year },
       }));
+
       getSumOrderByRange(dateNow);
     } catch (err) {
       console.log(err);
@@ -58,7 +67,9 @@ export default function DashBoard() {
       } else {
         setDateRange((prevDateRange) => ({ ...prevDateRange, error: {} }));
         const dataToSend = { startDate: dateRange.startDate, endDate: dateRange.endDate };
+
         await getSumOrderByRange(dataToSend);
+
         setDateRange((prevDateRange) => ({
           ...prevDateRange,
           selectedStartDate: formatDate(dateRange.startDate),
@@ -136,16 +147,14 @@ export default function DashBoard() {
           </Button>
         </div>
       </div>
-      <div className="p-1 mt-6 border-2 border-blue-gray-500">
-        <Statistic totalAgentAndSale={totalAgentAndSale} totalTarp={totalTarp} />
+      <div className="p-1 mt-6 border-y-2 border-blue-gray-500">
+        <Statistic totalAgentAndSale={totalAgentAndSale} totalTarp={totalTarp} leadCom={leadCom} />
       </div>
-      <div className="p-1 flex lg:flex-row md:flex-col sm:flex-col border border-blue-gray-500">
+      <div className="p-1 flex border-y-2 border-blue-gray-500 lg:flex-row md:flex-col sm:flex-col">
         <RateTable comTier={comTier} />
         <ComDetail agentTypeByComTier={agentTypeByComTier} totalAgentAndSale={totalAgentAndSale} />
       </div>
-      <div className="p-1 border border-blue-gray-500">
-        <StatusShow />
-      </div>
+     
     </div>
   );
 }

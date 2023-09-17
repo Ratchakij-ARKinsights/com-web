@@ -1,17 +1,24 @@
 import { useState } from "react";
-import { Button } from "@material-tailwind/react";
+import { Button, Typography } from "@material-tailwind/react";
 import useApiData from "../hooks/useApiData";
 import RateTable from "../features/dashboard/RateTable";
 import ProductConfig from "../features/product/ProductConfig";
 import Modal from "../components/Modal";
 import EditComTier from "../features/config/EditComTier";
 
+import productsJSON from "../data/new-data/products.json";
+import EditLeadComTier from "../features/config/EditLeadComTier";
+
 export default function ConfigPage() {
-  const { comTier, setComTier } = useApiData();
+  const { comTier, setComTier, leadComTier, setLeadComTier } = useApiData();
   const [open, setOpen] = useState(false);
+  const [openLead, setOpenLead] = useState(false);
 
   const onUpdateComTier = (updatedComTier) => {
     setComTier(updatedComTier); // อัปเดต state ของ ComTier ด้วยข้อมูลใหม่
+  };
+  const onUpdateLeadComTier = (updatedLeadComTier) => {
+    setLeadComTier(updatedLeadComTier); // อัปเดต state ของ ComTier ด้วยข้อมูลใหม่
   };
 
   return (
@@ -29,22 +36,63 @@ export default function ConfigPage() {
         </div>
       </header>
 
-      <div className="flex flex-col mb-8 p-6">
-        <RateTable comTier={comTier} />
-        <div className="flex justify-center">
-          <Button variant="gradient" className="rounded-full" onClick={() => setOpen(true)}>
-            EDIT
-          </Button>
+      <div className="w-full flex border border-blue-gray-100">
+        <div className="w-1/2 flex flex-col justify-center gap-2 ">
+          <RateTable comTier={comTier} />
+          <div className="mb-2 w-full flex justify-center">
+            <Button className="w-[6rem] bg-light-blue-700" size="sm" onClick={() => setOpen(true)}>
+              EDIT
+            </Button>
+          </div>
+        </div>
+        <Modal title="Config Commission Tier" open={open} onClose={() => setOpen(false)}>
+          {comTier?.map((item, index) => (
+            <EditComTier key={index} comTier={item} index={index} onUpdateComTier={onUpdateComTier} />
+          ))}
+        </Modal>
+        {/* //////////////////////// */}
+        <div className="w-1/2 ">
+          <div className="h-[26.2rem] bg-white border border-blue-gray-100">
+            <div className="text-center bg-blue-700 border border-blue-gray-100">
+              <Typography variant="h4" color="blue-gray">
+                Leader Commission
+              </Typography>
+            </div>
+
+            <div className="ml-2 p-8 flex flex-col items-center">
+              {leadComTier?.map((leadCom, index) => (
+                <div key={index}>
+                  <Typography variant="lead" className="mt-4 text-center text-blue-gray-500">
+                    <strong className="text-blue-gray-900">{leadCom.title}</strong>
+                    <br />
+                    {leadCom.percent}%
+                  </Typography>
+                </div>
+              ))}
+              <div className="mt-8">
+                <Button className="w-[6rem] bg-light-blue-900" size="sm" onClick={() => setOpenLead(true)}>
+                  EDIT
+                </Button>
+              </div>
+            </div>
+            <Modal title="Config Leader Commission" open={openLead} onClose={() => setOpenLead(false)}>
+              {leadComTier?.map((item, index) => (
+                <EditLeadComTier
+                  item={item}
+                  key={index}
+                  leadComTier={leadComTier}
+                  index={index}
+                  onUpdateLeadComTier={onUpdateLeadComTier}
+                />
+              ))}
+            </Modal>
+          </div>
         </div>
       </div>
-      <Modal title="Config Commission Tier" open={open} onClose={() => setOpen(false)}>
-        {comTier?.map((item, index) => (
-          <EditComTier key={index} comTier={item} index={index} onUpdateComTier={onUpdateComTier} />
-        ))}
-      </Modal>
-      <div className="mb-8 p-6">
+
+      {/* <div className="mb-8 p-6">
         <ProductConfig />
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -8,29 +8,35 @@ export const ApiDataContext = createContext();
 
 export default function ApiDataContextProvider({ children }) {
   const [comTier, setComTier] = useState(null);
+  const [leadComTier, setLeadComTier] = useState(null);
   const [employees, setEmployees] = useState([]);
+
   const [orders, setOrders] = useState([]);
-  const [sumOrderAgent, setSumOrderAgent] = useState(null);
+  const [agentSale, setAgentSale] = useState();
   const [sumOrderAgentByRange, setSumOrderAgentByRange] = useState(null);
+  const [orderAgentByRangeByLeader, setOrderAgentByRangeByLeader] = useState(null);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [comTierResponse, employeeResponse, orderResponse, sumResponse] = await Promise.all([
-          comTierApi.getComtier(),
-          employeeApi.getAllEmployee(),
-          orderApi.getAllOrder(),
-          orderApi.getTotalPriceByAgentId(),
-        ]);
+        const [comTierResponse, leadComTierResponse, employeeResponse, orderResponse, agentsSaleResponse] =
+          await Promise.all([
+            comTierApi.getComtier(),
+            comTierApi.getLeadComtier(),
+            employeeApi.getAllEmployee(),
+            orderApi.getAllOrder(),
+            employeeApi.getAgentSale(),
+          ]);
 
         setComTier(comTierResponse.data.comTier);
+        setLeadComTier(leadComTierResponse.data.leadComTier);
         setEmployees(employeeResponse.data.employees);
         setOrders(orderResponse.data.orders);
-        setSumOrderAgent(sumResponse.data.totalPriceByAgentId);
+        setAgentSale(agentsSaleResponse.data.agentSales);
       } catch (err) {
         console.log(err);
       }
     };
-
     fetchData();
   }, []);
 
@@ -41,11 +47,158 @@ export default function ApiDataContextProvider({ children }) {
 
     const res = await orderApi.getSumOrderByRange(dataToSend);
     setSumOrderAgentByRange(res.data.sumOrderAgentByRange);
+    setOrderAgentByRangeByLeader(res.data.agentDataByLeader);
+  };
+
+  const processComTier = (agentOrder) => {
+    try {
+      const processedAgentIds = new Set();
+      const agentTypeByComTier = [];
+      const totalAgentAndSale = [
+        {
+          New: { totalType: 0, totalSale: 0 },
+          Experience: { totalType: 0, totalSale: 0 },
+          Top: { totalType: 0, totalSale: 0 },
+        },
+        { Total: { totalType: 0, totalSale: 0 } },
+      ];
+
+      comTier?.forEach((tier) => {
+        const { tierLevel, rateStart, amount } = tier;
+        const tieredAgentTypes = {
+          New: 0,
+          Experience: 0,
+          Top: 0,
+          Total: 0,
+        };
+
+        agentOrder?.forEach((agent) => {
+          if (processedAgentIds.has(agent.agentId)) {
+            return;
+          }
+
+          if ((tierLevel <= 1 && agent.agentType === "Experience") || (tierLevel <= 2 && agent.agentType === "Top")) {
+            processedAgentIds.add(agent.agentId);
+            return;
+          }
+
+          if (agent.sumPrice >= rateStart) {
+            tieredAgentTypes[agent.agentType]++;
+            tieredAgentTypes.Total++;
+
+            totalAgentAndSale[0][agent.agentType].totalType++;
+            totalAgentAndSale[0][agent.agentType].totalSale += parseInt(agent.sumPrice, 10);
+            totalAgentAndSale[1].Total.totalSale += parseInt(agent.sumPrice, 10);
+
+            processedAgentIds.add(agent.agentId);
+          }
+        });
+
+        totalAgentAndSale[1].Total.totalType += tieredAgentTypes.Total;
+
+        agentTypeByComTier.push({
+          ...tieredAgentTypes,
+          tierLevel: tierLevel,
+          Rate: rateStart,
+          Amount: amount,
+        });
+      });
+
+      return { agentTypeByComTier, totalAgentAndSale };
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getTotalTarp = (agentTypeByComTier) => {
+    const totalTarp = [];
+    const tarpSum = { tmr: 0, tarp: 0, agent_com: 0 };
+
+    try {
+      agentTypeByComTier?.forEach((rowData) => {
+        tarpSum.tmr += rowData.Total;
+        tarpSum.tarp += rowData.Total * rowData.Rate;
+        tarpSum.agent_com += rowData.Total * rowData.Amount;
+      });
+
+      const comVsTarp = (tarpSum.agent_com / tarpSum.tarp) * 100;
+      const tarpVsTmr = Math.round(tarpSum.tarp / tarpSum.tmr);
+
+      totalTarp.push({
+        tarpSum,
+      });
+
+      totalTarp.push({
+        com_Vs_Tarp: comVsTarp,
+      });
+      totalTarp.push({
+        tarp_Vs_Tmr: tarpVsTmr,
+      });
+
+      return totalTarp;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getLeadComtier = (totalTarp) => {
+    let leadCom = [];
+    let comSup = 0;
+    let accSup = 0;
+    let comAm = 0;
+    let accAm = 0;
+
+    // เรียงลำดับ leadComtierData โดยให้ Supervisor ขึ้นก่อน Area Manager
+    const sortLeadComTier = leadComTier?.sort((a, b) => {
+      if (a.title === "Supervisor" && b.title === "Area Manager") {
+        return -1;
+      } else if (a.title === "Area Manager" && b.title === "Supervisor") {
+        return 1;
+      }
+      return 0;
+    });
+    sortLeadComTier?.forEach((item) => {
+      const leadPercent = item.percent;
+      const agentCom = totalTarp[0].tarpSum.agent_com;
+
+      if (item.title === "Supervisor") {
+        comSup = Math.round(agentCom * leadPercent * 0.01);
+        accSup = agentCom + comSup;
+        leadCom.push({
+          title: item.title,
+          com: comSup,
+          acc: accSup,
+        });
+      }
+      if (item.title === "Area Manager") {
+        comAm = comSup * leadPercent * 0.01;
+        accAm = accSup + comAm;
+        leadCom.push({
+          title: item.title,
+          com: comAm,
+          acc: accAm,
+        });
+      }
+    });
+    return leadCom;
   };
 
   return (
     <ApiDataContext.Provider
-      value={{ comTier, setComTier, employees, orders, sumOrderAgent, sumOrderAgentByRange, getSumOrderByRange }}
+      value={{
+        comTier,
+        setComTier,
+        leadComTier,
+        setLeadComTier,
+        employees,
+        orders,
+        agentSale,
+        sumOrderAgentByRange,
+        getSumOrderByRange,
+        processComTier,
+        getTotalTarp,
+        getLeadComtier,
+      }}
     >
       {children}
     </ApiDataContext.Provider>

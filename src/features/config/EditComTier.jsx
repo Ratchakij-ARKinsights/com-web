@@ -11,6 +11,7 @@ export default function EditComTier({ comTier, index, onUpdateComTier }) {
   const [input, setInput] = useState(initialInput);
   const [error, setError] = useState(null);
   // console.log(input);
+
   const comTierDataToUpdate = {
     id: comTier.id,
     rateStart: comTier.rateStart,
@@ -30,10 +31,6 @@ export default function EditComTier({ comTier, index, onUpdateComTier }) {
         rateStart: input.rateStart,
         percent: input.percent,
       };
-
-      console.log(input);
-      console.log(comTierDataToUpdate);
-      console.log(updatedComtier);
 
       const response = await comTierApi.updateComtier(updatedComtier);
 
@@ -71,7 +68,7 @@ export default function EditComTier({ comTier, index, onUpdateComTier }) {
 
         <input
           className="w-[7rem] rounded-md border px-1 py-1.5 text-center leading-6 outline-none"
-          type="text"
+          type="number"
           name="rateStart"
           value={input.rateStart}
           onChange={(e) => setInput({ ...input, rateStart: e.target.value })}
@@ -79,7 +76,7 @@ export default function EditComTier({ comTier, index, onUpdateComTier }) {
 
         <input
           className="w-[7rem] rounded-md border px-1 py-1.5 text-center leading-6 outline-none"
-          type="text"
+          type="number"
           name="percent"
           value={input.percent}
           onChange={(e) => setInput({ ...input, percent: e.target.value })}
