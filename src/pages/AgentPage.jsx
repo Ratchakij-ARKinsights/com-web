@@ -1,5 +1,5 @@
-import { Button } from "@material-tailwind/react";
-import React, { useState } from "react";
+import { Button, Card, Typography } from "@material-tailwind/react";
+import React, { useEffect, useState } from "react";
 import useApiData from "../hooks/useApiData";
 import DatePicker from "../components/DatePicker";
 import AgentSummary from "../features/agent/AgentSummary";
@@ -8,8 +8,13 @@ import ComDetail from "../features/dashboard/ComDetail";
 import AgentInfo from "../features/agent/AgentInfo";
 import InputErrorMessage from "../features/auth/components/InputErrorMessage";
 import * as employeeApi from "../api/employee-api";
+import * as orderApi from "../api/order-api";
 
 export default function AgentPage() {
+  const tableHead = ["agent-id", "name", "title", "type", "sale", "leaderId"];
+  const className = "px-4 py-2 border-b border-blue-gray-50";
+  const typoClass = "font-semibold text-blue-gray-600";
+
   const { comTier, employees, processComTier, getTotalTarp, getLeadComtier } = useApiData();
 
   const [dateRange, setDateRange] = useState({
@@ -17,17 +22,46 @@ export default function AgentPage() {
     endDate: new Date(),
     error: {},
   });
+
   const [employeeId, setEmployeeId] = useState();
   const [agentSaleDateByLeader, setAgentSaleDateByLeader] = useState();
+  const [agentOrder, setAgentOrder] = useState([]);
+  const [agentOrderByRange, setAgentOrderByRange] = useState([]);
 
   const { agentTypeByComTier, totalAgentAndSale } = processComTier(agentSaleDateByLeader);
   const totalTarp = getTotalTarp(agentTypeByComTier);
   const leadCom = getLeadComtier(totalTarp);
-  console.log(leadCom);
-
+console.log(totalTarp);
+console.log(leadCom);
   const handleEmployeeSelect = (e) => {
     const selectedId = e.target.value;
     setEmployeeId(parseInt(selectedId));
+  };
+
+  const getAgentOrderByRange = (orders, agents) => {
+    if (!orders || !agents) return [];
+
+    // สร้าง Map สำหรับเก็บ order ตาม agentId
+    const ordersByAgent = new Map();
+
+    // วนลูปเพื่อแยก order ตาม agentId
+    for (const order of orders) {
+      const agentId = order.agentId;
+      if (!ordersByAgent.has(agentId)) {
+        ordersByAgent.set(agentId, []);
+      }
+      ordersByAgent.get(agentId).push(order);
+    }
+    const updatedAgents = agents.map((agent) => {
+      const agentId = agent?.agentId;
+      if (ordersByAgent.has(agentId)) {
+        agent.orders = ordersByAgent.get(agentId);
+      } else {
+        agent.orders = [];
+      }
+      return agent;
+    });
+    return updatedAgents;
   };
 
   const handleSubmit = async () => {
@@ -40,15 +74,25 @@ export default function AgentPage() {
       const input = {
         startDate: dateRange.startDate,
         endDate: dateRange.endDate,
-        selectEmployee, // ส่ง object ของพนักงานที่เลือก
+        selectEmployee,
       };
-      const { data } = await employeeApi.getAgentSaleDateByLeaderId(input);
-      setAgentSaleDateByLeader(data.agentSaleDateByLeader);
+      const [agentSaleRes, orderSaleRes] = await Promise.all([
+        employeeApi.getAgentSaleDateByLeaderId(input),
+        orderApi.getOrderAgentByRange(input),
+      ]);
+      const agentSale = agentSaleRes.data.agentSaleDateByLeader;
+      const orderSale = orderSaleRes.data.orders;
+      setAgentSaleDateByLeader(agentSale);
+
+      // const agentOrderRange = getAgentOrderByRange(orderSale, agentSale);
+      const updatedAgentOrderByRange = getAgentOrderByRange(orderSale, agentSale);
+      setAgentOrderByRange(updatedAgentOrderByRange);
     } catch (err) {
       console.log(err);
     }
   };
 
+  console.log(agentOrderByRange);
   return (
     <>
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 mt-8 mb-8 flex flex-col gap-6">
@@ -121,12 +165,23 @@ export default function AgentPage() {
           </div>
         </div>
         <div className="p-1 w-full flex flex-col gap-2 border border-blue-gray-500">
-          <AgentSummary totalTarp={totalTarp} leadCom={leadCom}/>
+          <AgentSummary totalTarp={totalTarp} leadCom={leadCom} />
           <div className="flex lg:flex-row md:flex-col sm:flex-col">
             <RateTable comTier={comTier} />
             <ComDetail agentTypeByComTier={agentTypeByComTier} totalAgentAndSale={totalAgentAndSale} />
           </div>
-          <AgentInfo agentSaleDateByLeader={agentSaleDateByLeader} />
+          <div className="bg-white border border-blue-gray-100">
+            <div className="w-auto text-center bg-orange-900 opacity-90">
+              <Typography variant="h4" color="black">
+                Agent Member
+              </Typography>
+            </div>
+            <Card className="p-2 flex flex-col overflow-x-scroll">
+              {agentOrderByRange?.map((item, index) => {
+                return <AgentInfo key={index} index={index} item={item} />;
+              })}
+            </Card>
+          </div>
         </div>
       </div>
     </>

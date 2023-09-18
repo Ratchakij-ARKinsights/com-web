@@ -1,10 +1,8 @@
 import { Typography } from "@material-tailwind/react";
 
 export default function AgentSummary({ totalTarp, leadCom }) {
-  const totalAgentCom = totalTarp[0].tarpSum.agent_com;
-  const supCom = Math.round(totalAgentCom * 8 * 0.01);
-  const amCom = supCom * 8 * 0.01;
-  const accCost = supCom + totalAgentCom;
+
+
   return (
     <div className="bg-white border border-blue-gray-100">
       <div className="w-auto text-center bg-indigo-500">
@@ -44,26 +42,27 @@ export default function AgentSummary({ totalTarp, leadCom }) {
                 });
               }
             })}
+            {/* Lead Commission */}
             {leadCom?.map((item, index) => {
-              return Object.entries(item).map(([key, value], index) => {
-                const title = key === "supCom" ? "SUP_COM" : "AM_COM";
-                return (
-                  <div className="w-full" key={index}>
-                    <div className="flex justify-between w-full">
-                      <p className="uppercase text-base dark:text-white leading-4 text-gray-800">{title}</p>
-                      <p className="text-base dark:text-gray-300 leading-4 text-gray-600">
-                        {value.com.toLocaleString()}
-                      </p>
-                    </div>
-                    <div className="flex justify-between w-full">
-                      <p className="uppercase text-base dark:text-white leading-4 text-gray-800">Accumulate Cost</p>
-                      <p className="text-base dark:text-gray-300 leading-4 text-gray-600">
-                        {value.acc.toLocaleString()}
-                      </p>
-                    </div>
+           
+              return (
+                <div className="w-full" key={index}>
+                  <div className="flex justify-between w-full">
+                    <p className="uppercase text-base dark:text-white leading-4 text-gray-800">{item.title}</p>
+                    <p className="text-base dark:text-gray-300 leading-4 text-gray-600">
+                      {item.com.toLocaleString()}
+                    
+                    </p>
                   </div>
-                );
-              });
+                  <div className="flex justify-between w-full">
+                    <p className="uppercase text-base dark:text-white leading-4 text-gray-800">Accumulate Cost</p>
+                    <p className="text-base dark:text-gray-300 leading-4 text-gray-600">
+                      {item.acc.toLocaleString()}
+                     
+                    </p>
+                  </div>
+                </div>
+              );
             })}
           </div>
         </div>
