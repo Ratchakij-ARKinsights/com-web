@@ -1,8 +1,6 @@
 import { Button, Card, CardBody, CardFooter, CardHeader, Typography } from "@material-tailwind/react";
 
 export default function CardStat({ item, totalTarp }) {
-  console.log(item);
-  console.log(totalTarp[0].tarpSum.tarp);
   const leadCom = item.com;
   const result = (item.acc / totalTarp[0].tarpSum.tarp) * 100;
   const tarpVsAcc = result.toFixed(2);
@@ -19,12 +17,12 @@ export default function CardStat({ item, totalTarp }) {
 
       <CardBody className="h-[9rem] p-4">
         {Object.entries(item).map(([key, value], index) => {
-          console.log(value);
-
           const className = `mb-2 flex justify-between items-center ${
             index === Object.keys(item).length - 1 ? "" : "border-b"
           }`;
-          const head = ["TITLE", "COMMISSION", "Accumulate Cost"];
+          const head = ["Title", "Commission", "Acc. Cost"];
+          if (value === "Supervisor") value = "Sup";
+          if (value === "Area Manager") value = "AM";
           return (
             <div key={index} className={className}>
               <Typography className="font-extrabold" variant="h6" color="blue-gray">

@@ -8,6 +8,8 @@ export const getSumOrderByRange = (input) => axios.get("/order/sum-order-by-rang
 export const getOrderAgentByLeader = (input) => axios.get("/order/sum-order-by-leader", { params: input });
 export const getOrderAgentByRange = (input) => axios.get("/order/get-order-agent-by-range", { params: input });
 
+export const updateOrder = (input) => axios.patch("/order/update-order", input);
+
 // การใช้ axios.post จะส่งข้อมูลที่คุณระบุไปยัง URL ที่กำหนดด้วยเมธอด HTTP POST และรับข้อมูลที่เซิร์ฟเวอร์ส่งกลับมาในรูปแบบของ response.data
 // export const register = input => axios.post('/auth/register', input);
 // export const login = input => axios.post('/auth/login', input);

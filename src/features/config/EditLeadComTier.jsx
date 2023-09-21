@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import * as comTierApi from "../../api/comTier-api";
 
 export default function EditLeadComTier({ item, index, leadComTier, onUpdateLeadComTier }) {
-  console.log(leadComTier);
   const initialInput = {
     title: item.title,
     percent: item.percent,
@@ -43,30 +42,32 @@ export default function EditLeadComTier({ item, index, leadComTier, onUpdateLead
   };
 
   return (
-    <div>
-      <div className="flex flex-row"></div>
-
-      <div className="flex flex-row">
-        <div className="w-[7rem] px-1 py-1.5 text-center">
+    <>
+      <div className="px-14 flex flex-row justify-between items-center">
+        <div className="w-[8rem]">
           <h1>{item.title}</h1>
         </div>
-        <input
-          className="w-[7rem] rounded-md border px-1 py-1.5 text-center leading-6 outline-none"
-          type="number"
-          name="percent"
-          value={input.percent}
-          onChange={(e) => setInput({ ...input, percent: e.target.value })}
-        />
-        %
-        <Button variant="text" color="blue" size="sm" onClick={handleUpdateLeadComTier}>
-          save
-        </Button>
+        <div className="flex gap-2">
+          <input
+            style={{ width: "50px", textAlign: "center", border: "1px solid gray" }}
+            type="number"
+            name="percent"
+            value={input.percent}
+            onChange={(e) => setInput({ ...input, percent: e.target.value })}
+          />
+          <h1>%</h1>
+        </div>
+        <div>
+          <Button variant="text" color="blue" size="sm" onClick={handleUpdateLeadComTier}>
+            save
+          </Button>
+        </div>
       </div>
       {error && (
         <div className="text-red-500 mt-2">
           <p>{error}</p>
         </div>
       )}
-    </div>
+    </>
   );
 }

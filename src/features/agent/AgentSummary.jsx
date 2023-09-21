@@ -1,7 +1,7 @@
 import { Typography } from "@material-tailwind/react";
 
 export default function AgentSummary({ totalTarp, leadCom }) {
-
+  const tarp = totalTarp[0].tarpSum.tarp;
 
   return (
     <div className="bg-white border border-blue-gray-100">
@@ -44,22 +44,23 @@ export default function AgentSummary({ totalTarp, leadCom }) {
             })}
             {/* Lead Commission */}
             {leadCom?.map((item, index) => {
-           
+              const result = (item.acc / tarp) * 100;
+              let acc_vs_tarp = result.toFixed(2);
+              if (isNaN(acc_vs_tarp)) acc_vs_tarp = 0;
+
               return (
                 <div className="w-full" key={index}>
-                  <div className="flex justify-between w-full">
+                  <div className="py-1 flex justify-between w-full">
                     <p className="uppercase text-base dark:text-white leading-4 text-gray-800">{item.title}</p>
-                    <p className="text-base dark:text-gray-300 leading-4 text-gray-600">
-                      {item.com.toLocaleString()}
-                    
-                    </p>
+                    <p className="text-base dark:text-gray-300 leading-4 text-gray-600">{item.com.toLocaleString()}</p>
                   </div>
-                  <div className="flex justify-between w-full">
-                    <p className="uppercase text-base dark:text-white leading-4 text-gray-800">Accumulate Cost</p>
-                    <p className="text-base dark:text-gray-300 leading-4 text-gray-600">
-                      {item.acc.toLocaleString()}
-                     
-                    </p>
+                  <div className="py-1 flex justify-between w-full">
+                    <p className="uppercase text-base dark:text-white leading-4 text-gray-800">Acc.Cost</p>
+                    <p className="text-base dark:text-gray-300 leading-4 text-gray-600">{item.acc.toLocaleString()}</p>
+                  </div>
+                  <div className="py-1 flex justify-between w-full">
+                    <p className="uppercase text-base dark:text-white leading-4 text-gray-800">Acc.Cost_VS_TARP </p>
+                    <p className="text-base dark:text-gray-300 leading-4 text-gray-600">{acc_vs_tarp}%</p>
                   </div>
                 </div>
               );

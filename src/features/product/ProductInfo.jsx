@@ -1,103 +1,92 @@
-import jsonData from "../../data/jsonData.json";
+import { Button, Card, CardBody, CardHeader, Typography } from "@material-tailwind/react";
+import { useState } from "react";
+import Modal from "../../components/Modal";
+import EditOrder from "../product/EditOrder";
 
-import { Typography, Card, CardHeader, CardBody, Avatar, Tooltip, Progress } from "@material-tailwind/react";
+const orderHead = ["id", "date", "price", "status", "agent-Id", "description"];
+const className = "px-4 py-2 border-b border-blue-gray-50";
+const typoClass = "text-sm font-semibold text-blue-gray-600";
 
-export default function ProductInfo() {
-  const tableHead = ["#", "product", "member", "budget", "completion", ""];
-  const products = jsonData.products;
+export default function ProductInfo({ item, index }) {
+  const [open, setOpen] = useState(false);
+  const [editOrder, setEditOrder] = useState({});
+  const agentSale = Number(item.sumPrice).toLocaleString();
+  console.log(agentSale);
+  console.log(editOrder);
   return (
-    <div>
-      <Card>
-        {/* HEADER */}
-        <CardHeader className="mb-8 p-2" variant="gradient" color="green">
-          <Typography variant="h4" color="white">
-            Product
-          </Typography>
-        </CardHeader>
+    <>
+      {/* Card body */}
+      <CardBody className="overflow-x-scroll m-0 p-0">
+        <table className="w-full min-w-[640px] table-auto text-center">
+          <thead>
+            <tr>
+              {orderHead.map((el) => (
+                <th key={el} className="uppercase border-b border-blue-gray-50 py-3 px-5">
+                  <Typography className={typoClass}>{el}</Typography>
+                </th>
+              ))}
+            </tr>
+          </thead>
 
-        {/* BODY */}
-        <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
-          <table className="w-full min-w-[640px] table-auto">
-            <thead>
-              <tr>
-                {tableHead.map((el) => (
-                  <th key={el} className="border-b border-blue-gray-50 py-3 px-5 text-center">
-                    <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
-                      {el}
+          <tbody>
+            {item.orders?.map((order, key) => {
+              return (
+                <tr key={key}>
+                  {/* ID */}
+                  <td className={className}>
+                    <Typography className={typoClass} variant="small" color="blue-gray">
+                      {order?.id}
                     </Typography>
-                  </th>
-                ))}
-              </tr>
-            </thead>
+                  </td>
 
-            <tbody>
-              {products.map((product, key) => {
-                const className = `py-3 px-5 ${key === products.length - 1 ? "" : "border-b border-blue-gray-50"}`;
+                  {/* DATE */}
+                  <td className={className}>
+                    <Typography className={typoClass}> {order?.date} </Typography>
+                  </td>
 
-                return (
-                  <tr key={product.id}>
-                    {/* ID */}
-                    <td className="">
-                      <div className="flex justify-center">
-                        <Typography variant="small" color="blue-gray" className="font-bold">
-                          {product.id}
-                        </Typography>
-                      </div>
-                    </td>
-                    {/* PRODUCT */}
-                    <td className={className}>
-                      <div className="flex items-center gap-4">
-                        <Typography variant="small" color="blue-gray" className="font-bold">
-                          {product.name}
-                        </Typography>
-                      </div>
-                    </td>
-                    {/* MEMBER */}
-                    <td className={className}>
-                      {product.members.map((member, key) => (
-                        <Tooltip key={member.name} content={member.name}>
-                          <Avatar
-                            src={member.img}
-                            alt={member.name}
-                            size="xs"
-                            variant="circular"
-                            className={`cursor-pointer border-2 border-white ${key === 0 ? "" : "-ml-2.5"}`}
-                          />
-                        </Tooltip>
-                      ))}
-                    </td>
-                    {/* BUDGET */}
-                    <td className={className}>
-                      <Typography variant="small" className="text-xs font-medium text-blue-gray-600">
-                        {product.budget}
-                      </Typography>
-                    </td>
-                    {/* COMPLETION */}
-                    <td className={className}>
-                      <div className="w-10/12">
-                        <Typography variant="small" className="mb-1 block text-xs font-medium text-blue-gray-600">
-                          {product.completion}%
-                        </Typography>
-                        <Progress
-                          value={product.completion}
-                          variant="gradient"
-                          color={product.completion === 100 ? "green" : "blue"}
-                          className="h-1"
-                        />
-                      </div>
-                    </td>
-                    <td className={className}>
-                      <Typography as="a" href="/" className="text-xs font-semibold text-blue-600">
-                        Preview
-                      </Typography>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </CardBody>
-      </Card>
-    </div>
+                  {/* PRICE */}
+                  <td className={className}>
+                    <Typography className={typoClass}>{order?.price.toLocaleString()}</Typography>
+                  </td>
+
+                  {/* ORDER STATUS */}
+                  <td className={className}>
+                    <Typography className={typoClass}>{order.status ? "Active" : "Cancel"}</Typography>
+                  </td>
+
+                  {/* AGENT-ID */}
+                  <td className={className}>
+                    <Typography className={typoClass}>{order?.agentId}</Typography>
+                  </td>
+
+                  {/* DESCRIPTION */}
+                  <td className={className}>
+                    <Typography className={typoClass}>{order?.description ? order?.description : ""}</Typography>
+                  </td>
+
+                  {/* EDIT */}
+                  <td className={className}>
+                    <Button
+                      variant="text"
+                      size="sm"
+                      color="blue"
+                      onClick={() => {
+                        setEditOrder(order);
+                        setOpen(true);
+                      }}
+                    >
+                      Edit
+                    </Button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </CardBody>
+      <Modal title={`Edit Order ID: ${editOrder?.id}`} open={open} onClose={() => setOpen(false)}>
+        <EditOrder editOrder={editOrder} />
+      </Modal>
+    </>
   );
 }

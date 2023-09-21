@@ -52,41 +52,47 @@ export default function ConfigPage() {
         </Modal>
         {/* //////////////////////// */}
         <div className="w-1/2 ">
-          <div className="h-[26.2rem] bg-white border border-blue-gray-100">
-            <div className="text-center bg-blue-700 border border-blue-gray-100">
-              <Typography variant="h4" color="blue-gray">
-                Leader Commission
-              </Typography>
-            </div>
+          <div className="text-center bg-blue-700 border border-blue-gray-100">
+            <Typography variant="h4" color="blue-gray">
+              Leader Commission
+            </Typography>
+          </div>
+          <div className="border-b uppercase border-blue-gray-100 bg-blue-gray-50 p-4">
+            <Typography variant="small" color="blue-gray" className="font-extrabold leading-none">
+              Setting
+            </Typography>
+          </div>
 
-            <div className="ml-2 p-8 flex flex-col items-center">
+          <div className="h-[21rem] p-4 flex flex-col bg-white">
+            <div className="flex flex-col">
               {leadComTier?.map((leadCom, index) => (
-                <div key={index}>
-                  <Typography variant="lead" className="mt-4 text-center text-blue-gray-500">
-                    <strong className="text-blue-gray-900">{leadCom.title}</strong>
-                    <br />
-                    {leadCom.percent}%
+                <div key={index} className="w-[15rem] ml-4 mt-2 flex justify-between">
+                  <Typography variant="lead" className="font-semibold text-blue-gray-900">
+                    {leadCom.title}
+                  </Typography>
+                  <Typography variant="lead" className="font-semibold text-blue-gray-900">
+                    {leadCom.percent} %
                   </Typography>
                 </div>
               ))}
-              <div className="mt-8">
-                <Button className="w-[6rem] bg-light-blue-900" size="sm" onClick={() => setOpenLead(true)}>
-                  EDIT
-                </Button>
-              </div>
             </div>
-            <Modal title="Config Leader Commission" open={openLead} onClose={() => setOpenLead(false)}>
-              {leadComTier?.map((item, index) => (
-                <EditLeadComTier
-                  item={item}
-                  key={index}
-                  leadComTier={leadComTier}
-                  index={index}
-                  onUpdateLeadComTier={onUpdateLeadComTier}
-                />
-              ))}
-            </Modal>
+            <div className="mt-8 text-center">
+              <Button className="w-[6rem] bg-light-blue-900" size="sm" onClick={() => setOpenLead(true)}>
+                EDIT
+              </Button>
+            </div>
           </div>
+          <Modal title="Config Leader Commission" open={openLead} onClose={() => setOpenLead(false)}>
+            {leadComTier?.map((item, index) => (
+              <EditLeadComTier
+                item={item}
+                key={index}
+                leadComTier={leadComTier}
+                index={index}
+                onUpdateLeadComTier={onUpdateLeadComTier}
+              />
+            ))}
+          </Modal>
         </div>
       </div>
 
