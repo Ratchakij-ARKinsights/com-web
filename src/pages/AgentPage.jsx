@@ -32,14 +32,13 @@ export default function AgentPage() {
 
   const handleEmployeeSelect = (e) => {
     const selectedId = e.target.value;
-    setEmployeeId(parseInt(selectedId));
+    setEmployeeId(+selectedId);
   };
 
   const handleSubmit = async () => {
     try {
       const selectEmployee = employees.find((employee) => employee.id === employeeId);
       if (!selectEmployee || !dateRange.startDate || !dateRange.endDate) {
-        console.log("input invalid");
         return;
       }
       const input = {
@@ -64,7 +63,7 @@ export default function AgentPage() {
 
   return (
     <>
-      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 mt-8 mb-8 flex flex-col gap-6">
+      <div className="max-w-7xl h-auto mx-auto py-6 sm:px-6 lg:px-8 mt-8 mb-8 flex flex-col gap-6">
         <header className="bg-white shadow ">
           <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <div className="items-center justify-between md:flex">
@@ -85,7 +84,7 @@ export default function AgentPage() {
         {/* Select DATE && EMPLOYEES */}
         <div className="w-full flex justify-center items-center gap-6 p-2 mb-6 ">
           <div className="p-2 flex flex-col items-center gap-4">
-            {/* DATE */}
+            {/* DATE PICKER */}
             <div className="flex gap-5 ">
               <div className="flex flex-col">
                 <p>
@@ -110,7 +109,7 @@ export default function AgentPage() {
                 />
               </div>
             </div>
-            {/* EMPLOYEE */}
+            {/* SELECT EMPLOYEE */}
             <div className="w-72">
               <select
                 className="block w-full bg-gray-200 border border-gray-500 text-gray-700 py-1 px-1 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
@@ -133,13 +132,17 @@ export default function AgentPage() {
             </Button>
           </div>
         </div>
+
+        {/* AGENT SUMMARY */}
         <div className="p-1 w-full flex flex-col gap-2 border border-blue-gray-500">
           <AgentSummary totalTarp={totalTarp} leadCom={leadCom} />
           <div className="flex lg:flex-row md:flex-col sm:flex-col">
             <RateTable comTier={comTier} />
             <ComDetail agentTypeByComTier={agentTypeByComTier} totalAgentAndSale={totalAgentAndSale} />
           </div>
-          <div className="bg-white border border-blue-gray-100">
+
+          {/* Agent Member */}
+          <div className=" h-max bg-white border border-blue-gray-100">
             <div className="w-auto text-center bg-orange-900 opacity-90">
               <Typography variant="h4" color="black">
                 Agent Member
@@ -156,7 +159,6 @@ export default function AgentPage() {
                     ))}
                   </tr>
                 </thead>
-
                 {agentOrderByRange?.map((item, index) => {
                   return <AgentInfo key={index} index={index} item={item} />;
                 })}

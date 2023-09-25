@@ -1,5 +1,5 @@
-import { Button, Card, CardBody, CardHeader, Typography } from "@material-tailwind/react";
-import { useState } from "react";
+import { Button, CardBody, Typography } from "@material-tailwind/react";
+import { useEffect, useState } from "react";
 import Modal from "../../components/Modal";
 import EditOrder from "../product/EditOrder";
 
@@ -7,12 +7,10 @@ const orderHead = ["id", "date", "price", "status", "agent-Id", "description"];
 const className = "px-4 py-2 border-b border-blue-gray-50";
 const typoClass = "text-sm font-semibold text-blue-gray-600";
 
-export default function ProductInfo({ item, index }) {
+export default function ProductInfo({ agentOrder, agentRate, onUpdateOrder }) {
   const [open, setOpen] = useState(false);
-  const [editOrder, setEditOrder] = useState({});
-  const agentSale = Number(item.sumPrice).toLocaleString();
-  console.log(agentSale);
-  console.log(editOrder);
+  const [order, setOrder] = useState();
+
   return (
     <>
       {/* Card body */}
@@ -29,7 +27,7 @@ export default function ProductInfo({ item, index }) {
           </thead>
 
           <tbody>
-            {item.orders?.map((order, key) => {
+            {agentOrder?.map((order, key) => {
               return (
                 <tr key={key}>
                   {/* ID */}
@@ -71,7 +69,7 @@ export default function ProductInfo({ item, index }) {
                       size="sm"
                       color="blue"
                       onClick={() => {
-                        setEditOrder(order);
+                        setOrder(order);
                         setOpen(true);
                       }}
                     >
@@ -84,8 +82,16 @@ export default function ProductInfo({ item, index }) {
           </tbody>
         </table>
       </CardBody>
-      <Modal title={`Edit Order ID: ${editOrder?.id}`} open={open} onClose={() => setOpen(false)}>
-        <EditOrder editOrder={editOrder} />
+
+      <Modal title={`Edit Order ID: ${order?.id}`} open={open} onClose={() => setOpen(false)}>
+        <EditOrder
+          order={order}
+          agentRate={agentRate}
+          onUpdateOrder={onUpdateOrder}
+          onSuccess={() => {
+            setOpen(false);
+          }}
+        />
       </Modal>
     </>
   );

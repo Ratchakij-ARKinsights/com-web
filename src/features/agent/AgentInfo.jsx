@@ -54,16 +54,16 @@ export default function AgentInfo({ item, index }) {
         </tr>
       </tbody>
       {showOrders && (
-        <Card className="w-full absolute">
+        <Card className="my-6 px-12 w-full absolute">
           {/* Card Header */}
-          <CardHeader className="m-2 px-4 py-2" variant="gradient" color="green">
+          <CardHeader className="" variant="gradient" color="green">
             <Typography variant="h6" color="white">
               Order List
             </Typography>
           </CardHeader>
 
           {/* Card body */}
-          <CardBody className="overflow-x-scroll m-0 p-0">
+          <CardBody className="overflow-x-scroll overflow-y-visible m-0 p-0">
             <table className="w-full min-w-[640px] table-auto text-center">
               <thead>
                 <tr>

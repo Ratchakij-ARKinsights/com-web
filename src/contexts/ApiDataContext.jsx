@@ -19,14 +19,13 @@ export default function ApiDataContextProvider({ children }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [comTierResponse, leadComTierResponse, employeeResponse, orderResponse, agentsSaleResponse] =
-          await Promise.all([
-            comTierApi.getComtier(),
-            comTierApi.getLeadComtier(),
-            employeeApi.getAllEmployee(),
-            orderApi.getAllOrder(),
-            employeeApi.getAgentSale(),
-          ]);
+        const [comTierResponse, leadComTierResponse, employeeResponse, orderResponse, agentsSaleResponse] = await Promise.all([
+          comTierApi.getComtier(),
+          comTierApi.getLeadComtier(),
+          employeeApi.getAllEmployee(),
+          orderApi.getAllOrder(),
+          employeeApi.getAgentSale(),
+        ]);
 
         setComTier(comTierResponse.data.comTier);
         setLeadComTier(leadComTierResponse.data.leadComTier);
@@ -63,47 +62,59 @@ export default function ApiDataContextProvider({ children }) {
         { Total: { totalType: 0, totalSale: 0 } },
       ];
 
-      comTier?.forEach((tier) => {
-        const { tierLevel, rateStart, amount } = tier;
-        const tieredAgentTypes = {
-          New: 0,
-          Experience: 0,
-          Top: 0,
-          Total: 0,
-        };
+      if (agentOrder) {
+        // Create a copy of agentOrder to avoid modifying the original array
+        const updatedAgentOrder = [...agentOrder];
 
-        agentOrder?.forEach((agent) => {
-          if (processedAgentIds.has(agent.agentId)) {
-            return;
+        comTier?.map((tier) => {
+          const { tierLevel, rateStart,percent, amount } = tier;
+          const tieredAgentTypes = {
+            New: 0,
+            Experience: 0,
+            Top: 0,
+            Total: 0,
+          };
+
+          for (let i = 0; i < updatedAgentOrder.length; i++) {
+            const agent = updatedAgentOrder[i];
+
+            if (processedAgentIds.has(agent.agentId)) {
+              continue;
+            }
+
+            if ((tierLevel <= 1 && agent.agentType === "Experience") || (tierLevel <= 2 && agent.agentType === "Top")) {
+              continue;
+            }
+
+            if (agent.sumPrice >= rateStart) {
+              // Increment the tieredAgentTypes count
+              tieredAgentTypes[agent.agentType]++;
+              tieredAgentTypes.Total++;
+
+              // Update totalAgentAndSale
+              totalAgentAndSale[0][agent.agentType].totalType++;
+              totalAgentAndSale[0][agent.agentType].totalSale += parseInt(agent.sumPrice, 10);
+
+              totalAgentAndSale[1].Total.totalType++;
+              totalAgentAndSale[1].Total.totalSale += parseInt(agent.sumPrice, 10);
+
+              processedAgentIds.add(agent.agentId);
+              updatedAgentOrder.splice(i, 1);
+              i--;
+            }
           }
 
-          if ((tierLevel <= 1 && agent.agentType === "Experience") || (tierLevel <= 2 && agent.agentType === "Top")) {
-            processedAgentIds.add(agent.agentId);
-            return;
-          }
+          totalAgentAndSale[1].Total.totalType += tieredAgentTypes.Total;
 
-          if (agent.sumPrice >= rateStart) {
-            tieredAgentTypes[agent.agentType]++;
-            tieredAgentTypes.Total++;
-
-            totalAgentAndSale[0][agent.agentType].totalType++;
-            totalAgentAndSale[0][agent.agentType].totalSale += parseInt(agent.sumPrice, 10);
-            totalAgentAndSale[1].Total.totalSale += parseInt(agent.sumPrice, 10);
-
-            processedAgentIds.add(agent.agentId);
-          }
+          agentTypeByComTier.push({
+            ...tieredAgentTypes,
+            tierLevel: tierLevel,
+            Rate: rateStart,
+            Percent:percent,
+            Amount: amount,
+          });
         });
-
-        totalAgentAndSale[1].Total.totalType += tieredAgentTypes.Total;
-
-        agentTypeByComTier.push({
-          ...tieredAgentTypes,
-          tierLevel: tierLevel,
-          Rate: rateStart,
-          Amount: amount,
-        });
-      });
-
+      }
       return { agentTypeByComTier, totalAgentAndSale };
     } catch (err) {
       console.log(err);
@@ -115,7 +126,7 @@ export default function ApiDataContextProvider({ children }) {
     const tarpSum = { tmr: 0, tarp: 0, agent_com: 0 };
 
     try {
-      agentTypeByComTier?.forEach((rowData) => {
+      agentTypeByComTier?.map((rowData) => {
         tarpSum.tmr += rowData.Total;
         tarpSum.tarp += rowData.Total * rowData.Rate;
         tarpSum.agent_com += rowData.Total * rowData.Amount;
@@ -157,7 +168,7 @@ export default function ApiDataContextProvider({ children }) {
       }
       return 0;
     });
-    sortLeadComTier?.forEach((item) => {
+    sortLeadComTier?.map((item) => {
       const leadPercent = item.percent;
       const agentCom = totalTarp[0].tarpSum.agent_com;
 
@@ -183,6 +194,10 @@ export default function ApiDataContextProvider({ children }) {
     return leadCom;
   };
 
+  const { agentTypeByComTier, totalAgentAndSale } = processComTier(sumOrderAgentByRange);
+  const totalTarp = getTotalTarp(agentTypeByComTier);
+  const leadCom = getLeadComtier(totalTarp);
+
   return (
     <ApiDataContext.Provider
       value={{
@@ -198,6 +213,10 @@ export default function ApiDataContextProvider({ children }) {
         processComTier,
         getTotalTarp,
         getLeadComtier,
+        agentTypeByComTier,
+        totalAgentAndSale,
+        totalTarp,
+        leadCom,
       }}
     >
       {children}

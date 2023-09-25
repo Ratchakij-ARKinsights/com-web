@@ -1,5 +1,5 @@
 import { Button, Card, CardHeader, Typography } from "@material-tailwind/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as employeeApi from "../api/employee-api";
 import * as orderApi from "../api/order-api";
 import DatePicker from "../components/DatePicker";
@@ -11,23 +11,48 @@ import ProductInfo from "../features/product/ProductInfo";
 
 export default function ProductPage() {
   const { comTier, employees, processComTier, getTotalTarp, getLeadComtier } = useApiData();
-
+  const agents = employees.filter((agent) => agent.title === "Agent");
   const [dateRange, setDateRange] = useState({
     startDate: new Date(),
     endDate: new Date(),
     error: {},
   });
 
-  const agents = employees.filter((agent) => agent.title === "Agent");
+  // const [agentOrderByRange, setAgentOrderByRange] = useState([]);
+  const [employeeId, setEmployeeId] = useState("");
+  const [agentOrder, setAgentOrder] = useState([]);
+  const [agentOrderCancel, setAgentOrderCancel] = useState([]);
+  const [agentSale, setAgentSale] = useState("");
 
-  const [employeeId, setEmployeeId] = useState();
-  const [agentSaleDateByLeader, setAgentSaleDateByLeader] = useState();
+  const orderId = agentOrder?.map((order) => order.id);
+  let agentRate = { rate: "No Commission", percent: "No Commission" };
 
-  const [agentOrderByRange, setAgentOrderByRange] = useState([]);
-
+  if (agentSale) {
+    const comRate = processComTier(agentSale);
+    const result = comRate.agentTypeByComTier.find((value) => value.Total !== 0);
+    if (result) {
+      agentRate = {
+        rate: result.Rate,
+        percent: result.Percent,
+      };
+    }
+  }
+  console.log(JSON.stringify(agentOrderCancel));
   const handleEmployeeSelect = (e) => {
     const selectedId = e.target.value;
-    setEmployeeId(parseInt(selectedId));
+    setEmployeeId(+selectedId);
+  };
+
+  useEffect(() => {}, [agentOrder, agentOrderCancel]);
+
+  const onUpdateOrder = async (order) => {
+    // prev แทนค่า state ก่อนหน้า (ค่าเดิม) ของ orderAgent.
+    setAgentOrder((prev) => prev.map((item) => (item.id === order.id ? order : item)));
+    console.log(orderId);
+    const cancelOrderRes = await orderApi.getOrderCancel(orderId);
+    const cancelOrder = cancelOrderRes.data.cancelOrder;
+    console.log(cancelOrder);
+    setAgentOrderCancel(cancelOrder);
   };
 
   const handleSubmit = async () => {
@@ -47,13 +72,18 @@ export default function ProductPage() {
         employeeApi.getAgentSaleDateByLeaderId(input),
         orderApi.getOrderAgentByRange(input),
       ]);
+
       const agentSale = agentSaleRes.data.agentSaleDateByLeader;
       const orderSale = orderSaleRes.data.orders;
-      setAgentSaleDateByLeader(agentSale);
+      // const updatedAgentOrderByRange = getAgentOrderByRange(orderSale, agentSale);
 
-      const updatedAgentOrderByRange = getAgentOrderByRange(orderSale, agentSale);
-
-      setAgentOrderByRange(updatedAgentOrderByRange);
+      const orderId = orderSale.map((order) => order.id);
+      const cancelOrderRes = await orderApi.getOrderCancel(orderId);
+      const cancelOrder = cancelOrderRes.data.cancelOrder;
+      setAgentSale(agentSale);
+      setAgentOrder(orderSale);
+      setAgentOrderCancel(cancelOrder);
+      // setAgentOrderByRange(updatedAgentOrderByRange);
     } catch (err) {
       console.log(err);
     }
@@ -126,17 +156,51 @@ export default function ProductPage() {
             </Button>
           </div>
         </div>
+
+        {/* CANCEL ORDER */}
         <div className="p-6">
           <Card>
-            {/* Card Header */}
+            <CardHeader className="m-2 px-4 py-2" variant="gradient" color="red">
+              <Typography variant="h6" color="white">
+                Order Cancel
+              </Typography>
+            </CardHeader>
+            <table className="mx-2 table-auto text-center">
+              <thead>
+                <tr>
+                  <th className="px-4 py-2">Order ID</th>
+                  <th className="px-4 py-2">Date</th>
+                  <th className="px-4 py-2">Rate</th>
+                  <th className="px-4 py-2">Percent</th>
+                  <th className="px-4 py-2">Deduction</th>
+                  <th className="px-4 py-2">Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {agentOrderCancel?.map((item) => (
+                  <tr key={item.id}>
+                    <td className="border px-4 py-2">{item.orderId}</td>
+                    <td className="border px-4 py-2">{item.date}</td>
+                    <td className="border px-4 py-2">{item.rate}</td>
+                    <td className="border px-4 py-2">{item.percent}</td>
+                    <td className="border px-4 py-2">{item.deduction}</td>
+                    <td className="border px-4 py-2">{item.description}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Card>
+        </div>
+
+        {/* ORDER LIST */}
+        <div className="p-6">
+          <Card>
             <CardHeader className="m-2 px-4 py-2" variant="gradient" color="green">
               <Typography variant="h6" color="white">
                 Order List
               </Typography>
             </CardHeader>
-            {agentOrderByRange?.map((item, index) => {
-              return <ProductInfo key={index} index={index} item={item} />;
-            })}
+            <ProductInfo agentOrder={agentOrder} agentRate={agentRate} onUpdateOrder={onUpdateOrder} />;
           </Card>
         </div>
       </main>

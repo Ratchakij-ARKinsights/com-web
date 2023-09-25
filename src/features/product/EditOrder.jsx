@@ -1,92 +1,118 @@
-import { Button, Textarea, Typography } from "@material-tailwind/react";
+import { Button, Textarea } from "@material-tailwind/react";
 import React, { useState } from "react";
 
-import * as comTierApi from "../../api/comTier-api";
+import * as orderApi from "../../api/order-api";
 
-export default function EditOrder({ editOrder }) {
+export default function EditOrder({ order, agentRate, onUpdateOrder, onSuccess }) {
   const initialInput = {
-    id: editOrder.id,
-    price: editOrder.price,
-    status: editOrder.status,
-    description: editOrder.description,
-    agentId: editOrder.agentId,
+    price: order.price,
+    status: order.status,
+    description: order.description,
+    agentId: order.agentId,
   };
-  const [input, setInput] = useState(initialInput);
-  const [error, setError] = useState(null);
-  // console.log(input);
 
-  const orderDataToUpdate = {
-    id: editOrder.id,
-    price: editOrder.price,
-    status: editOrder.status,
-    description: editOrder.description,
-  };
+  const [input, setInput] = useState(initialInput);
+  const [error, setError] = useState({});
+
+  const isReadOnly = !input.status;
+
+  function checkSameValue(input, value) {
+    if (Object.keys(input).some((key) => input[key] !== value[key])) {
+      return false;
+    }
+    return true;
+  }
 
   const handleUpdateOrder = async () => {
     try {
       const updatedOrder = {
-        ...editOrder,
+        ...order,
         price: input.price,
         status: input.status,
         description: input.description,
+        rate: agentRate.rate,
+        percent: agentRate.percent,
       };
-      console.log(editOrder);
-      console.log(updatedOrder);
 
-      // const response = await comTierApi.updateLeadComtier(updatedOrder);
-      // console.log(response.data.leadComTier);
-      // onUpdateLeadComTier(response.data.leadComTier);
+      if (checkSameValue(input, order)) {
+        console.log("same value");
+        onSuccess();
+        setError(null);
+        return;
+      }
 
+      if (updatedOrder.status) {
+        await orderApi.deleteCancelOrder(updatedOrder.id);
+      } else {
+        const res = await orderApi.createCancelOrder(updatedOrder);
+        console.log(res);
+        if (res.response) {
+          const error = res.response.data;
+          onSuccess();
+          throw error;
+        }
+        onSuccess();
+      }
+      const result = await orderApi.updateOrder(updatedOrder);
+      const updateOrder = result.data.order;
+
+      onUpdateOrder(updateOrder);
+      onSuccess();
       setError(null); // Clear the error on success
     } catch (err) {
       console.error(err);
-      setError("Unable to update ComTier at this time.");
+      setError(err);
     }
   };
 
   return (
-    <div className="flex justify-between items-end">
-      <div>
-        <div className="py-2 flex">
-          <p className=" text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">Price</p>
-          <input
-            className="py-1 px-1 border-2 border-gray-200 rounded text-gray-700 leading-tight focus:outline-none focus:bg-white"
-            type="number"
-            name="price"
-            value={editOrder.price || ""}
-            onChange={(e) => setInput({ ...input, price: e.target.value })}
-          />
-        </div>
-        <div className="py-2 flex">
-          <p className="text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">Status</p>
-          <select
-            className="py-1 px-1 border-2 border-gray-200 rounded text-gray-700 leading-tight focus:outline-none focus:bg-white"
-            name="status"
-            defaultValue={input.status ? "true" : "false"}
-            onChange={(e) => setInput({ ...input, status: e.target.value === "true" })}
-          >
-            <option value="true">Active</option>
-            <option value="false">Cancel</option>
-          </select>
-        </div>
-        <Textarea
-          label="Message"
-          name="description"
-          value={input.description}
-          onChange={(e) => setInput({ ...input, description: e.target.value })}
-        />
-      </div>
-
-      <div>
-        <Button variant="text" color="blue" size="sm" onClick={handleUpdateOrder}>
-          save
-        </Button>
-      </div>
+    <>
       {error && (
-        <div className="text-red-500 mt-2">
-          <p>{error}</p>
+        <div className="text-center text-red-500">
+          <p>{error.errMessage}</p>
         </div>
       )}
-    </div>
+      <div className="flex justify-between items-end">
+        <div>
+          <div className="py-2 flex">
+            <p className=" text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">Price</p>
+            <input
+              className="py-1 px-1 border-2 border-gray-200 rounded text-gray-700 leading-tight focus:outline-none focus:bg-white"
+              type="number"
+              name="price"
+              value={input.price || ""}
+              onChange={(e) => setInput({ ...input, price: e.target.value })}
+              disabled={true}
+              // disabled={isReadOnly} // ปิดการแก้ไขถ้า input.status เป็น "false"
+            />
+          </div>
+          <div className="py-2 flex">
+            <p className="text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">Status</p>
+            <select
+              className="py-1 px-1 border-2 border-gray-200 rounded text-gray-700 leading-tight focus:outline-none focus:bg-white"
+              name="status"
+              defaultValue={input.status ? "true" : "false"}
+              onChange={(e) => setInput({ ...input, status: e.target.value === "true" })}
+            >
+              <option value="true">Active</option>
+              <option value="false">Cancel</option>
+            </select>
+          </div>
+          <Textarea
+            label="Description"
+            name="description"
+            value={input.description}
+            onChange={(e) => setInput({ ...input, description: e.target.value })}
+            // readOnly={isReadOnly} // ปิดการแก้ไขถ้า input.status เป็น "false"
+          />
+        </div>
+
+        <div>
+          <Button variant="text" color="blue" size="sm" onClick={handleUpdateOrder}>
+            save
+          </Button>
+        </div>
+      </div>
+    </>
   );
 }

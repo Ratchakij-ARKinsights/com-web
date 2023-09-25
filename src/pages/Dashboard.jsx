@@ -7,16 +7,9 @@ import RateTable from "../features/dashboard/RateTable";
 import Statistic from "../features/dashboard/Statistic";
 import validateInputDate from "../features/dashboard/validators/validate-inputDate";
 import useApiData from "../hooks/useApiData";
+
 export default function DashBoard() {
-  const {
-    comTier,
-    leadComTier,
-    sumOrderAgentByRange,
-    getSumOrderByRange,
-    processComTier,
-    getTotalTarp,
-    getLeadComtier,
-  } = useApiData();
+  const { comTier, getSumOrderByRange, agentTypeByComTier, totalAgentAndSale, totalTarp, leadCom } = useApiData();
   const [dateRange, setDateRange] = useState({
     startDate: new Date(),
     endDate: new Date(),
@@ -24,11 +17,6 @@ export default function DashBoard() {
     selectedEndDate: "",
     error: {},
   });
-
-  const { agentTypeByComTier, totalAgentAndSale } = processComTier(sumOrderAgentByRange);
-  const totalTarp = getTotalTarp(agentTypeByComTier);
-
-  const leadCom = getLeadComtier(totalTarp);
 
   useEffect(() => {
     fetchRangeDefault();
@@ -154,7 +142,6 @@ export default function DashBoard() {
         <RateTable comTier={comTier} />
         <ComDetail agentTypeByComTier={agentTypeByComTier} totalAgentAndSale={totalAgentAndSale} />
       </div>
-     
     </div>
   );
 }
