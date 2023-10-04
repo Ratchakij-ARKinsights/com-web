@@ -17,42 +17,62 @@ export default function AgentPage() {
   const { comTier, employees, processComTier, getTotalTarp, getLeadComtier } = useApiData();
 
   const [dateRange, setDateRange] = useState({
-    startDate: new Date(),
-    endDate: new Date(),
+    startDate: null,
+    endDate: null,
     error: {},
   });
 
   const [employeeId, setEmployeeId] = useState();
   const [agentSaleDateByLeader, setAgentSaleDateByLeader] = useState();
   const [agentOrderByRange, setAgentOrderByRange] = useState([]);
+  const [isAgent, setIsAgent] = useState(false);
+  const [isOrder, setIsOrder] = useState(false);
 
   const { agentTypeByComTier, totalAgentAndSale } = processComTier(agentSaleDateByLeader);
   const totalTarp = getTotalTarp(agentTypeByComTier);
   const leadCom = getLeadComtier(totalTarp);
 
   const handleEmployeeSelect = (e) => {
-    const selectedId = e.target.value;
-    setEmployeeId(+selectedId);
+    const selectedId = +e.target.value;
+    setEmployeeId(selectedId);
   };
 
   const handleSubmit = async () => {
     try {
-      const selectEmployee = employees.find((employee) => employee.id === employeeId);
-      if (!selectEmployee || !dateRange.startDate || !dateRange.endDate) {
+      const selectAgent = employees.find((employee) => employee.id === employeeId);
+      if (!selectAgent || !dateRange.startDate || !dateRange.endDate) {
+        setIsAgent(false);
+        return;
+      } else setIsAgent(true);
+
+      if (dateRange.startDate > dateRange.endDate) {
+        setIsAgent(false);
+        // แสดงข้อความแจ้งเตือน
+        setDateRange((prevDateRange) => ({ ...prevDateRange, error: "Start date should be before end date." }));
         return;
       }
+
       const input = {
         startDate: dateRange.startDate,
         endDate: dateRange.endDate,
-        selectEmployee,
+        selectAgent,
       };
+
       const [agentSaleRes, orderSaleRes] = await Promise.all([
         employeeApi.getAgentSaleDateByLeaderId(input),
         orderApi.getOrderAgentByRange(input),
       ]);
+
       const agentSale = agentSaleRes.data.agentSaleDateByLeader;
       const orderSale = orderSaleRes.data.orders;
+
       setAgentSaleDateByLeader(agentSale);
+
+      if (orderSale.length < 1) {
+        setIsOrder(true);
+      } else {
+        setIsOrder(false);
+      }
 
       const updatedAgentOrderByRange = getAgentOrderByRange(orderSale, agentSale);
       setAgentOrderByRange(updatedAgentOrderByRange);
@@ -69,15 +89,7 @@ export default function AgentPage() {
             <div className="items-center justify-between md:flex">
               <div className="max-w-lg">
                 <h3 className="text-gray-800 text-xl font-bold sm:text-2xl">Agent</h3>
-                {/* <p className="text-gray-600 mt-2">
-                  Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                </p> */}
               </div>
-              {/* <div className="mt-3 md:mt-0">
-                <button className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm">
-                  Add Member
-                </button>
-              </div> */}
             </div>
           </div>
         </header>
@@ -135,7 +147,7 @@ export default function AgentPage() {
 
         {/* AGENT SUMMARY */}
         <div className="p-1 w-full flex flex-col gap-2 border border-blue-gray-500">
-          <AgentSummary totalTarp={totalTarp} leadCom={leadCom} />
+          <AgentSummary totalTarp={totalTarp} leadCom={leadCom} isAgent={isAgent} isOrder={isOrder} />
           <div className="flex lg:flex-row md:flex-col sm:flex-col">
             <RateTable comTier={comTier} />
             <ComDetail agentTypeByComTier={agentTypeByComTier} totalAgentAndSale={totalAgentAndSale} />

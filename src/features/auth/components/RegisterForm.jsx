@@ -6,11 +6,13 @@ import validateRegister from "../validators/validate-register";
 import InputErrorMessage from "./InputErrorMessage";
 
 import useAuth from "../../../hooks/useAuth";
+import { Option, Select } from "@material-tailwind/react";
 
 const initialInput = {
   firstName: "",
   lastName: "",
   email: "",
+  role: "",
   password: "",
   confirmPassword: "",
 };
@@ -19,9 +21,12 @@ export default function RegisterForm({ onSuccess }) {
   const [input, setInput] = useState(initialInput);
   const [error, setError] = useState({});
 
+  const roleOptions = ["Agent", "Supervisor", "Area Manager"];
+
   const { register } = useAuth();
 
   const handleChangeInput = (e) => {
+    console.log(e);
     setInput({ ...input, [e.target.name]: e.target.value });
   };
 
@@ -29,6 +34,7 @@ export default function RegisterForm({ onSuccess }) {
     try {
       e.preventDefault();
       const result = validateRegister(input);
+      console.log(result);
       if (result) {
         return setError(result);
       }
@@ -83,6 +89,8 @@ export default function RegisterForm({ onSuccess }) {
           />
           {error.email && <InputErrorMessage message={error.email} />}
         </div>
+
+        {/* PASSWORD */}
         <div className="col-span-full">
           <RegisterInput
             name="password"
@@ -102,6 +110,29 @@ export default function RegisterForm({ onSuccess }) {
             isInvalid={error.confirmPassword}
           />
           {error.confirmPassword && <InputErrorMessage message={error.confirmPassword} />}
+        </div>
+        {/* ROLE */}
+        <div className="col-span-full">
+          <Select
+            className={`block w-full rounded-md border px-3 py-1.5 leading-6 outline-none text-sm focus:ring ${
+              error.role
+                ? "border-red-500 focus:ring-red-300"
+                : "border-gray-300 focus:ring-blue-300 focus:border-blue-500"
+            }`}
+            name="role"
+            label="Select Role"
+            value={input.role}
+            onChange={(e) => {
+              setInput({ ...input, role: e });
+            }}
+          >
+            {roleOptions.map((role, index) => (
+              <Option key={index} value={role}>
+                {role}
+              </Option>
+            ))}
+          </Select>
+          {error.role && <InputErrorMessage message={error.role} />}
         </div>
       </div>
 

@@ -1,60 +1,89 @@
-import { useLocation } from "react-router-dom";
+import { Bars3BottomRightIcon, PresentationChartBarIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
-import MenuItem from "./MenuItem";
 import useAuth from "../hooks/useAuth";
+import MenuItem from "./MenuItem";
 
-const menus = [
-  { id: 1, to: "/", name: "Dashboard" },
-  { id: 2, to: "/agent", name: "Agent" },
-  { id: 3, to: "/product", name: "Product" },
-  { id: 4, to: "/config", name: "Config" },
-  { id: 5, to: "/about", name: "About" },
+const links = [
+  { id: 1, to: "/admin", name: "Admin" },
+  { id: 2, to: "/", name: "Dashboard" },
+  { id: 3, to: "/agent", name: "Agent" },
+  { id: 4, to: "/product", name: "Product" },
+  { id: 5, to: "/config", name: "Config" },
   { id: 6, to: "/create", name: "Create" },
 ];
 
-export default function Navbar() {
-
+export default function nav() {
   const location = useLocation();
-  const { logout } = useAuth();
+  const { authenticatedUser, logout } = useAuth();
+  const user = authenticatedUser;
+  console.log(user);
+
+  const [open, setOpen] = useState(false);
+
+  const className = `md:flex md:items-center md:pb-0 absolute md:static md:z-auto left-0 w-full md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in ${
+    open ? "z-50 top-14 pb-6 bg-white border-y-4 border-y-black" : "z-[-1] top-[-490px]"
+  }`;
 
   return (
-    <>
-      <nav className="flex items-center justify-center flex-wrap bg-gray-800 p-4">
-        <div className="flex items-center justify-between w-11/12">
-          {/* LOGO */}
-          <div className="mr-10 flex items-center text-white">
-            <span className="font-semibold text-xl ">ARK Insure Broker Co., Ltd.</span>
+    <div className="shadow-md w-full top-0 left-0  bg-gray-50 ">
+      <div className=" md:px-10 px-7 py-4 md:flex justify-between items-center">
+        {/* LOGO */}
+        <Link to="/">
+          <div className="flex text-2xl cursor-pointer items-center gap-2">
+            <PresentationChartBarIcon className="w-7 h-7 text-blue-600" />
+            <span className="font-bold">ARK Insure Broker Co., Ltd.</span>
+          </div>
+        </Link>
+
+        <div className="w-3/4 flex justify-between">
+          {/* MENU ICON */}
+          <div className="w-7 h-7 absolute right-8 top-6 cursor-pointer md:hidden" onClick={() => setOpen(!open)}>
+            {open ? <XMarkIcon /> : <Bars3BottomRightIcon />}
           </div>
 
-          {/* MENU */}
-          {/* <div className="block lg:hidden">
-            <button className="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400 hover:text-white hover:border-white">
-              <svg className="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" /></svg>
-            </button>
+          {/* LINK-1 */}
+          <ul className={className}>
+            {links.map((link, index) => (
+              <li key={index} className="font-semibold my-7 md:my-0 md:ml-8">
+                <MenuItem key={link.id} to={link.to} name={link.name} active={location.pathname === link.to} />
+              </li>
+            ))}
+            {open && (
+              <button
+                className="m-0 md:my-0 md:ml-8 xs:hidden whitespace-nowrap text-gray-800 hover:text-blue-400 "
+                onClick={logout}
+              >
+                Sign out
+              </button>
+            )}
+          </ul>
+
+          {/* LINK-2 */}
+          {/* <div className={className}>
+          {links.map((link, index) => (
+            <Link key={index} to={link.to} className="font-semibold my-7 md:my-0 md:ml-8">
+              <div className={`text-gray-800 hover:text-blue-400 duration-500 ${location.pathname === link.to ? "underline " : ""}`}>
+                {link.name}
+              </div>
+            </Link>
+          ))}
           </div> */}
 
-          {/* <div className="flex-grow flex items-center w-auto"> */}
-          {/* LIST MENU */}
-          <div className="text-base text-white lg:flex-grow">
-            {menus.map((el) => (
-              <MenuItem
-                key={el.id}
-                to={el.to}
-                name={el.name}
-                active={location.pathname === el.to}
-              />
-            ))}
-          </div>
-          {/* Sign out */}
-          {/* <div className="flex justify-end items-center"> */}
-          <button className="inline-block px-4 py-2 leading-none  text-white hover:text-teal-200 mt-4 lg:mt-0"
-            onClick={logout}>
-            Sign out
-          </button>
-          {/* </div> */}
-          {/* </div> */}
+          {/* LOGOUT */}
+          {!open && (
+            <div className={className}>
+              <button
+                className="m-0 md:my-0 md:ml-8 xs:hidden whitespace-nowrap text-gray-800 hover:text-blue-400 "
+                onClick={logout}
+              >
+                Sign out
+              </button>
+            </div>
+          )}
         </div>
-      </nav>
-    </>
+      </div>
+    </div>
   );
 }

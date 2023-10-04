@@ -1,7 +1,11 @@
-import { Typography } from "@material-tailwind/react";
+import { Alert, Typography } from "@material-tailwind/react";
+import { CheckCircleIcon } from "@heroicons/react/24/solid";
 
-export default function AgentSummary({ totalTarp, leadCom }) {
+export default function AgentSummary({ totalTarp, leadCom, isAgent, isOrder }) {
   const tarp = totalTarp[0].tarpSum.tarp;
+  const agentCom = totalTarp[0].tarpSum.agent_com;
+  const checkOrder = isOrder ? "No Order" : false;
+  const checkCom = agentCom === 0 ? "No Commission." : false;
 
   return (
     <div className="bg-white border border-blue-gray-100">
@@ -10,6 +14,13 @@ export default function AgentSummary({ totalTarp, leadCom }) {
           Overall
         </Typography>
       </div>
+
+      {isAgent && (checkOrder || checkCom) && (
+        <Alert className="font-medium bg-white text-red-500">
+          <CheckCircleIcon className="inline-block h-[1.5rem]" /> {checkOrder || checkCom}
+        </Alert>
+      )}
+
       <div className="flex justify-center flex-col md:flex-row  items-stretch w-full space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8">
         <div className="flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 dark:bg-gray-800 space-y-6">
           <h3 className="text-xl dark:text-white font-semibold leading-5 text-gray-800">Summary</h3>

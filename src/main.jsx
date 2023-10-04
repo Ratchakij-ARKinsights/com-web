@@ -10,10 +10,10 @@ import "sweetalert2/src/sweetalert2.scss";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   //<React.StrictMode>
-  <ApiDataContext>
-    <AuthContextProvider>
+  <AuthContextProvider>
+    <ApiDataContext>
       <App />
-    </AuthContextProvider>
-  </ApiDataContext>
+    </ApiDataContext>
+  </AuthContextProvider>
   //</React.StrictMode>
 );

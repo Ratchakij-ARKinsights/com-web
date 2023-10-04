@@ -5,13 +5,16 @@ import "react-datepicker/dist/react-datepicker.css";
 function CustomDatePicker({ selected, onChange, placeholderText }) {
   return (
     <DatePicker
-    className="h-[2rem]"
+      className="h-[2rem]"
       selected={selected}
       onChange={onChange}
       placeholderText={placeholderText}
       dateFormat="MM-yyyy"
       showMonthYearPicker
       isClearable
+      onKeyDown={(e) => {
+        e.preventDefault();
+      }}
     />
   );
 }

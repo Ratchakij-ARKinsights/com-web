@@ -5,7 +5,7 @@ export const getTotalPriceByAgentId = () => axios.get("/order/total-price-by-age
 export const getSumOrderByRange = (input) => axios.get("/order/sum-order-by-range", { params: input });
 export const getOrderAgentByLeader = (input) => axios.get("/order/sum-order-by-leader", { params: input });
 export const getOrderAgentByRange = (input) => axios.get("/order/get-order-agent-by-range", { params: input });
-export const getOrderCancel = (input) => axios.get("/order/get-order-cancel", { params: [input] });
+export const getOrderCancel = (input) => axios.get("/order/get-order-cancel", { params: input });
 
 export const createOrder = (input) => axios.post("/order", input);
 export const createCancelOrder = (input) => axios.post("/order/create-cancel-order", input);

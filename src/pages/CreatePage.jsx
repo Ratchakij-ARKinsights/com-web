@@ -9,6 +9,7 @@ import * as orderApi from "../api/order-api";
 
 import OrderList from "../features/order/OrderList";
 
+const tableHead = ["id", "date", "price", "status", "agent-Id", "description"];
 export default function CreatePage() {
   const [employees, setEmployees] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -72,7 +73,7 @@ export default function CreatePage() {
 
         <div className="flex flex-col w-full md:w-1/2">
           <CreateOrder employees={employees} fetchOrder={fetchOrder} onSuccess={onSuccess} onError={onError} />
-          <OrderList orders={orders} />
+          <OrderList tableHead={tableHead} orders={orders} />
         </div>
       </div>
     </div>

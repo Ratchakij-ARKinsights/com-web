@@ -11,39 +11,38 @@ import useApiData from "../hooks/useApiData";
 export default function DashBoard() {
   const { comTier, getSumOrderByRange, agentTypeByComTier, totalAgentAndSale, totalTarp, leadCom } = useApiData();
   const [dateRange, setDateRange] = useState({
-    startDate: new Date(),
-    endDate: new Date(),
+    startDate: null,
+    endDate: null,
     selectedStartDate: "",
     selectedEndDate: "",
     error: {},
   });
 
-  useEffect(() => {
-    fetchRangeDefault();
-  }, []);
+  // useEffect(() => {
+  //   const fetchRangeDefault = () => {
+  //     try {
+  //       const dateNow = {
+  //         startDate: null,
+  //         endDate: null,
+  //       };
+  //       const month = dateNow.startDate.toLocaleString("en-US", { month: "long" });
+  //       const year = dateNow.startDate.getFullYear();
 
-  const fetchRangeDefault = () => {
-    try {
-      const dateNow = {
-        startDate: new Date(),
-        endDate: new Date(),
-      };
-      const month = dateNow.startDate.toLocaleString("en-US", { month: "long" });
-      const year = dateNow.startDate.getFullYear();
+  //       setDateRange((prevDateRange) => ({
+  //         ...prevDateRange,
+  //         startDate: dateNow.startDate,
+  //         endDate: dateNow.endDate,
+  //         selectedStartDate: { month, year },
+  //         selectedEndDate: { month, year },
+  //       }));
 
-      setDateRange((prevDateRange) => ({
-        ...prevDateRange,
-        startDate: dateNow.startDate,
-        endDate: dateNow.endDate,
-        selectedStartDate: { month, year },
-        selectedEndDate: { month, year },
-      }));
-
-      getSumOrderByRange(dateNow);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  //       getSumOrderByRange(dateNow);
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   };
+  //   fetchRangeDefault();
+  // }, []);
 
   const handleSubmitDateRange = async () => {
     try {
@@ -100,13 +99,13 @@ export default function DashBoard() {
   return (
     <div className="max-w-7xl mx-auto py-6 md:px-6 md:flex-col sm:px-6 sm:flex-col lg:px-8 mt-8 mb-8 flex flex-col gap-4 border-2 border-blue-gray-500">
       <div className="px-2 flex justify-between items-center">
-        {dateRange.selectedStartDate && dateRange.selectedEndDate && (
-          <div className="w-full text-center">
+        <div className="w-full text-center">
+          {dateRange.selectedStartDate && dateRange.selectedEndDate && (
             <Typography variant="h3" color="blue-gray">
               {displayText}
             </Typography>
-          </div>
-        )}
+          )}
+        </div>
         <div className="flex justify-evenly gap-5 items-center">
           <div className="flex flex-col">
             <p>

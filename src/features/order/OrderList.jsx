@@ -1,8 +1,6 @@
 import { Card, CardHeader, CardBody, Typography, Avatar, Chip, Tooltip, Progress } from "@material-tailwind/react";
 
-export default function OrderList({ orders }) {
-  const tableHead = ["id", "date", "price", "status", "agent-Id", "description"];
-
+export default function OrderList({ orders, tableHead }) {
   return (
     <div>
       <Card>

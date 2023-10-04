@@ -1,12 +1,10 @@
-import { useState } from "react";
 import { Button, Typography } from "@material-tailwind/react";
-import useApiData from "../hooks/useApiData";
-import RateTable from "../features/dashboard/RateTable";
-import ProductConfig from "../features/product/ProductConfig";
+import { useState } from "react";
 import Modal from "../components/Modal";
 import EditComTier from "../features/config/EditComTier";
+import RateTable from "../features/dashboard/RateTable";
+import useApiData from "../hooks/useApiData";
 
-import productsJSON from "../data/new-data/products.json";
 import EditLeadComTier from "../features/config/EditLeadComTier";
 
 export default function ConfigPage() {
@@ -95,10 +93,6 @@ export default function ConfigPage() {
           </Modal>
         </div>
       </div>
-
-      {/* <div className="mb-8 p-6">
-        <ProductConfig />
-      </div> */}
     </div>
   );
 }

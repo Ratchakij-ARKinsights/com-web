@@ -23,7 +23,7 @@ export default function CardFour({ totalTarp }) {
           }`;
           return (
             <div key={index} className={className}>
-              <Typography className="uppercase font-extrabold" variant="h6" color="blue-gray">
+              <Typography className="capitalize font-extrabold" variant="h6" color="blue-gray">
                 {key}
               </Typography>
               <Typography variant="h5" color="blue-gray">

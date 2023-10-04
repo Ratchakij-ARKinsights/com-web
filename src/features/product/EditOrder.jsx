@@ -3,7 +3,7 @@ import React, { useState } from "react";
 
 import * as orderApi from "../../api/order-api";
 
-export default function EditOrder({ order, agentRate, onUpdateOrder, onSuccess }) {
+export default function EditOrder({ order, agentRate, onUpdateOrder, onUpdateOrderCancel, onSuccess }) {
   const initialInput = {
     price: order.price,
     status: order.status,
@@ -33,26 +33,24 @@ export default function EditOrder({ order, agentRate, onUpdateOrder, onSuccess }
         rate: agentRate.rate,
         percent: agentRate.percent,
       };
+      console.log(updatedOrder);
 
+      setInput(updatedOrder);
       if (checkSameValue(input, order)) {
         console.log("same value");
         onSuccess();
         setError(null);
-        return;
+        // return;
       }
 
       if (updatedOrder.status) {
-        await orderApi.deleteCancelOrder(updatedOrder.id);
+        orderApi.deleteCancelOrder(updatedOrder.id);
       } else {
-        const res = await orderApi.createCancelOrder(updatedOrder);
-        console.log(res);
-        if (res.response) {
-          const error = res.response.data;
-          onSuccess();
-          throw error;
-        }
-        onSuccess();
+        const cancelOrderRes = await orderApi.createCancelOrder(updatedOrder);
+        const cancelOrder = cancelOrderRes.data.cancelOrder;
+        onUpdateOrderCancel(cancelOrder);
       }
+
       const result = await orderApi.updateOrder(updatedOrder);
       const updateOrder = result.data.order;
 

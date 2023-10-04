@@ -3,10 +3,13 @@ import { createContext, useEffect, useState } from "react";
 import * as comTierApi from "../api/comTier-api";
 import * as employeeApi from "../api/employee-api";
 import * as orderApi from "../api/order-api";
+import useAuth from "../hooks/useAuth";
 
 export const ApiDataContext = createContext();
 
 export default function ApiDataContextProvider({ children }) {
+  const { authenticatedUser } = useAuth();
+  
   const [comTier, setComTier] = useState(null);
   const [leadComTier, setLeadComTier] = useState(null);
   const [employees, setEmployees] = useState([]);
@@ -19,6 +22,7 @@ export default function ApiDataContextProvider({ children }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        if (!authenticatedUser) return;
         const [comTierResponse, leadComTierResponse, employeeResponse, orderResponse, agentsSaleResponse] = await Promise.all([
           comTierApi.getComtier(),
           comTierApi.getLeadComtier(),
@@ -37,7 +41,7 @@ export default function ApiDataContextProvider({ children }) {
       }
     };
     fetchData();
-  }, []);
+  }, [authenticatedUser]);
 
   const getSumOrderByRange = async (dataToSend) => {
     if (!dataToSend) {
@@ -67,7 +71,7 @@ export default function ApiDataContextProvider({ children }) {
         const updatedAgentOrder = [...agentOrder];
 
         comTier?.map((tier) => {
-          const { tierLevel, rateStart,percent, amount } = tier;
+          const { tierLevel, rateStart, percent, amount } = tier;
           const tieredAgentTypes = {
             New: 0,
             Experience: 0,
@@ -110,7 +114,7 @@ export default function ApiDataContextProvider({ children }) {
             ...tieredAgentTypes,
             tierLevel: tierLevel,
             Rate: rateStart,
-            Percent:percent,
+            Percent: percent,
             Amount: amount,
           });
         });
