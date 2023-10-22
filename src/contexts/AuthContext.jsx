@@ -7,13 +7,13 @@ import * as authService from "../api/auth-api";
 export const AuthContext = createContext();
 
 export default function AuthContextProvider({ children }) {
-  const [authenticatedUser, setAuthenticatedUser] = useState(getAccessToken() ? true : null);
+  const [authUser, setAuthUser] = useState(getAccessToken() ? true : null);
 
   useEffect(() => {
     const fetchAuthUser = async () => {
       try {
         const res = await authService.fetchMe();
-        setAuthenticatedUser(res.data.user);
+        setAuthUser(res.data.user);
       } catch (err) {
         removeAccessToken();
       }
@@ -28,7 +28,7 @@ export default function AuthContextProvider({ children }) {
     const res = await authService.register(input);
     if (res?.data?.accessToken) {
       setAccessToken(res.data.accessToken);
-      setAuthenticatedUser(jwtDecode(res.data.accessToken));
+      setAuthUser(jwtDecode(res.data.accessToken));
       return;
     }
     return res;
@@ -39,7 +39,7 @@ export default function AuthContextProvider({ children }) {
 
     if (res.data) {
       setAccessToken(res.data.accessToken);
-      setAuthenticatedUser(jwtDecode(res.data.accessToken));
+      setAuthUser(jwtDecode(res.data.accessToken));
       return;
     }
     return res;
@@ -47,8 +47,8 @@ export default function AuthContextProvider({ children }) {
 
   const logout = () => {
     removeAccessToken();
-    setAuthenticatedUser(null);
+    setAuthUser(null);
   };
 
-  return <AuthContext.Provider value={{ authenticatedUser, register, login, logout }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ authUser, register, login, logout }}>{children}</AuthContext.Provider>;
 }

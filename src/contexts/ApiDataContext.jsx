@@ -8,8 +8,8 @@ import useAuth from "../hooks/useAuth";
 export const ApiDataContext = createContext();
 
 export default function ApiDataContextProvider({ children }) {
-  const { authenticatedUser } = useAuth();
-  
+  const { authUser } = useAuth();
+
   const [comTier, setComTier] = useState(null);
   const [leadComTier, setLeadComTier] = useState(null);
   const [employees, setEmployees] = useState([]);
@@ -22,14 +22,16 @@ export default function ApiDataContextProvider({ children }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (!authenticatedUser) return;
-        const [comTierResponse, leadComTierResponse, employeeResponse, orderResponse, agentsSaleResponse] = await Promise.all([
-          comTierApi.getComtier(),
-          comTierApi.getLeadComtier(),
-          employeeApi.getAllEmployee(),
-          orderApi.getAllOrder(),
-          employeeApi.getAgentSale(),
-        ]);
+        if (!authUser) return;
+
+        const [comTierResponse, leadComTierResponse, employeeResponse, orderResponse, agentsSaleResponse] =
+          await Promise.all([
+            comTierApi.getComtier(),
+            comTierApi.getLeadComtier(),
+            employeeApi.getAllEmployee(),
+            orderApi.getAllOrder(),
+            employeeApi.getAgentSale(),
+          ]);
 
         setComTier(comTierResponse.data.comTier);
         setLeadComTier(leadComTierResponse.data.leadComTier);
@@ -41,7 +43,7 @@ export default function ApiDataContextProvider({ children }) {
       }
     };
     fetchData();
-  }, [authenticatedUser]);
+  }, [authUser]);
 
   const getSumOrderByRange = async (dataToSend) => {
     if (!dataToSend) {
@@ -139,16 +141,9 @@ export default function ApiDataContextProvider({ children }) {
       const comVsTarp = (tarpSum.agent_com / tarpSum.tarp) * 100;
       const tarpVsTmr = Math.round(tarpSum.tarp / tarpSum.tmr);
 
-      totalTarp.push({
-        tarpSum,
-      });
-
-      totalTarp.push({
-        com_Vs_Tarp: comVsTarp,
-      });
-      totalTarp.push({
-        tarp_Vs_Tmr: tarpVsTmr,
-      });
+      totalTarp.push({ tarpSum });
+      totalTarp.push({ com_Vs_Tarp: comVsTarp });
+      totalTarp.push({ tarp_Vs_Tmr: tarpVsTmr });
 
       return totalTarp;
     } catch (err) {
@@ -185,6 +180,7 @@ export default function ApiDataContextProvider({ children }) {
           acc: accSup,
         });
       }
+
       if (item.title === "Area Manager") {
         comAm = comSup * leadPercent * 0.01;
         accAm = accSup + comAm;

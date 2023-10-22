@@ -1,81 +1,78 @@
-import { Card, CardHeader, CardBody, Typography, Avatar, Chip, Tooltip, Progress } from "@material-tailwind/react";
+import { Card, CardHeader, div, Typography, Avatar, Chip, Tooltip, Progress } from "@material-tailwind/react";
 import { useEffect } from "react";
 
 export default function AgentList({ employees }) {
   // console.log(employees);
-  const tableHead = ["id", "name", "title", "type", "leader-Id"];
+  const tableHead = ["#", "Name", "Title", "Type", "Lead-ID", "Login ID", "Status"];
 
   return (
-    <div>
-      <Card>
-        {/* Card Header */}
-        <CardHeader className="m-2 p-2" variant="gradient" color="blue">
-          <Typography variant="h6" color="white">
-            Employee Member
-          </Typography>
-        </CardHeader>
+    <div className="bg-white">
+      <div className="px-2 py-1 bg-gray-300">
+        <Typography variant="h6" color="blue-gray">
+          Agent Member
+        </Typography>
+      </div>
 
-        {/* Card body */}
-        <CardBody className="overflow-x-scroll m-0 p-0">
-          <table className="w-full min-w-[640px] table-auto text-center">
-            <thead>
-              <tr>
-                {tableHead.map((el) => (
-                  <th key={el} className="border-b border-blue-gray-50 py-3 px-5">
-                    <Typography className="text-[11px] font-bold uppercase text-blue-gray-700" variant="small">
-                      {el}
+      <div className="overflow-x-scroll m-0 p-0">
+        <table className="w-full min-w-[640px] table-auto text-center">
+          <thead>
+            <tr className="m-1 p-1 bg-blue-400">
+              {tableHead.map((el, index) => (
+                <th key={index} className="py-1 border-b border-blue-gray-50 ">
+                  <Typography variant="small" className="text-white">
+                    {el}
+                  </Typography>
+                </th>
+              ))}
+            </tr>
+          </thead>
+
+          <tbody>
+            {employees?.map((employee, key) => {
+              const className = `py-2 ${key === employees.length - 1 ? "" : "border-b border-blue-gray-50"}`;
+
+              return (
+                <tr key={key}>
+                  {/* ID */}
+                  <td className={className}>
+                    <Typography variant="small" className=" text-blue-gray-600">
+                      {employee?.id}
                     </Typography>
-                  </th>
-                ))}
-              </tr>
-            </thead>
+                  </td>
 
-            <tbody>
-              {employees?.map((employee, key) => {
-                const className = `py-3 px-5 ${key === employees.length - 1 ? "" : "border-b border-blue-gray-50"}`;
+                  {/* NAME */}
+                  <td className={className}>
+                    <Typography variant="small" className="text-blue-gray-600">
+                      {employee?.name}
+                    </Typography>
+                  </td>
 
-                return (
-                  <tr key={key}>
+                  {/* Title */}
+                  <td className={className}>
+                    <Typography variant="small" className="text-blue-gray-600">
+                      {employee?.title}
+                    </Typography>
+                  </td>
 
-                    {/* ID */}
-                    <td className={className}>
-                      <Typography className="font-semibold" variant="small" color="blue-gray">
-                        {employee?.id}
-                      </Typography>
-                    </td>
+                  {/* Type */}
+                  <td className={className}>
+                    <Typography variant="small" className="text-blue-gray-600">
+                      {employee?.type}
+                    </Typography>
+                  </td>
 
-                    {/* NAME */}
-                    <td className={className}>
-                      <Typography className="font-semibold" variant="small" color="blue-gray">
-                        {employee?.name}
-                      </Typography>
-                    </td>
-
-                    {/* Title */}
-                    <td className={className}>
-                      <Typography className="text-xs font-semibold text-blue-gray-600"> {employee?.title} </Typography>
-                    </td>
-
-                    {/* Type */}
-                    <td className={className}>
-                      <Typography className="text-xs font-semibold text-blue-gray-600">{employee?.type}</Typography>
-                    </td>
-
-                    {/* Leader ID */}
-                    <td className={className}>
-                      {employee?.leaderId && (
-                        <Typography className="text-xs font-semibold text-blue-gray-600">
-                          {employee?.leaderId}
-                        </Typography>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </CardBody>
-      </Card>
+                  {/* Leader ID */}
+                  <td className={className}>
+                    <Typography variant="small" className="text-blue-gray-600">
+                      {employee?.leaderId ? employee?.leaderId : ""}
+                    </Typography>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

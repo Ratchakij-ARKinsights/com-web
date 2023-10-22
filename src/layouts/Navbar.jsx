@@ -16,9 +16,9 @@ const links = [
 
 export default function nav() {
   const location = useLocation();
-  const { authenticatedUser, logout } = useAuth();
-  const user = authenticatedUser;
-  console.log(user);
+  const { authUser, logout } = useAuth();
+  console.log(authUser);
+
 
   const [open, setOpen] = useState(false);
 
@@ -45,11 +45,16 @@ export default function nav() {
 
           {/* LINK-1 */}
           <ul className={className}>
-            {links.map((link, index) => (
-              <li key={index} className="font-semibold my-7 md:my-0 md:ml-8">
-                <MenuItem key={link.id} to={link.to} name={link.name} active={location.pathname === link.to} />
-              </li>
-            ))}
+            {links.map((link, index) => {
+              if (authUser?.role !== "Admin" && link.name === "Admin") {
+                return null;
+              }
+              return (
+                <li key={index} className="font-semibold my-7 md:my-0 md:ml-8">
+                  <MenuItem key={link.id} to={link.to} name={link.name} active={location.pathname === link.to} />
+                </li>
+              );
+            })}
             {open && (
               <button
                 className="m-0 md:my-0 md:ml-8 xs:hidden whitespace-nowrap text-gray-800 hover:text-blue-400 "

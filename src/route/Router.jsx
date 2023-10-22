@@ -1,6 +1,9 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
 import RedirectIfAuthenticate from "../features/auth/components/RedirectIfAuthenticate";
 import ProtectedRoute from "../features/auth/components/ProtectedRoute";
+import ProtectedAdminRoute from "../features/auth/components/ProtectedAdminRoute";
+
 import LoginPage from "../pages/LoginPage";
 import Container from "../layouts/Container";
 import Dashboard from "../pages/Dashboard";
@@ -20,18 +23,26 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: "/",
     element: (
       <ProtectedRoute>
         <Container />
       </ProtectedRoute>
     ),
     children: [
-      { path: "/admin", element: <AdminPage /> },
       { path: "/", element: <Dashboard /> },
       { path: "/agent", element: <AgentPage /> },
       { path: "/product", element: <ProductPage /> },
       { path: "/config", element: <ConfigPage /> },
       { path: "/create", element: <CreatePage /> },
+      {
+        path: "/admin",
+        element: (
+          <ProtectedAdminRoute>
+            <AdminPage />
+          </ProtectedAdminRoute>
+        ),
+      },
     ],
   },
 ]);

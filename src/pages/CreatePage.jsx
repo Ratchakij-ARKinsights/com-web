@@ -1,3 +1,5 @@
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import { Typography } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import CreateEmployee from "../features/create/CreateEmployee";
@@ -8,9 +10,12 @@ import * as employeeApi from "../api/employee-api";
 import * as orderApi from "../api/order-api";
 
 import OrderList from "../features/order/OrderList";
+import RegisterContainer from "../features/auth/components/RegisterContainer";
+import Modal from "../components/Modal";
 
 const tableHead = ["id", "date", "price", "status", "agent-Id", "description"];
 export default function CreatePage() {
+  const [open, setOpen] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [orders, setOrders] = useState([]);
 
@@ -49,12 +54,11 @@ export default function CreatePage() {
 
   const createEmployee = async (input) => {
     try {
-      // ทำการสร้างพนักงานใหม่โดยใช้ input และ API หรือเมธอดที่เหมาะสม
       const createEmp = await employeeApi.createEmployee(input);
       // console.log(createEmp);
-      if (!createEmp.data) {
-        throw new Error(createEmp?.response?.data?.errMessage ?? "Error Create");
-      }
+
+      if (!createEmp.data) throw new Error(createEmp?.response?.data?.errMessage ?? "Error Create");
+
       fetchEmployee();
       onSuccess();
     } catch (err) {
@@ -64,18 +68,39 @@ export default function CreatePage() {
   };
 
   return (
-    <div className="max-w-[100rem] mx-auto py-6 sm:px-6 lg:px-8 mt-8 mb-8 flex flex-col gap-12">
-      <div className="flex justify-evenly md:justify-center">
-        <div className="flex flex-col w-full md:w-1/2">
-          <CreateEmployee createEmployee={createEmployee} />
-          <EmployeeList employees={employees} />
-        </div>
-
-        <div className="flex flex-col w-full md:w-1/2">
-          <CreateOrder employees={employees} fetchOrder={fetchOrder} onSuccess={onSuccess} onError={onError} />
-          <OrderList tableHead={tableHead} orders={orders} />
-        </div>
+    <div>
+      <div>
+        <Typography variant="h1" color="blue-gray">
+          User
+        </Typography>
+        <Typography className="ml-1" variant="lead" color="blue-gray">
+          User in system
+        </Typography>
       </div>
+      <hr className="my-4 border-2 border-blue-gray-100" />
+
+      <div>
+        <button
+          className="mb-4 py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded inline-flex items-center"
+          onClick={() => setOpen(true)}
+        >
+          <PlusCircleIcon className="w-6 h6" />
+          <Typography variant="small" color="white" className="ml-1 font-light">
+            Create User
+          </Typography>
+        </button>
+      </div>
+
+      <div className="flex flex-col w-full">
+        {/* <CreateEmployee createEmployee={createEmployee} /> */}
+        <EmployeeList employees={employees} />
+      </div>
+
+      <div className="flex flex-col w-full">
+        <CreateOrder employees={employees} fetchOrder={fetchOrder} onSuccess={onSuccess} onError={onError} />
+        <OrderList tableHead={tableHead} orders={orders} />
+      </div>
+      <Modal title="Create User" open={open} onClose={() => setOpen(false)}></Modal>
     </div>
   );
 }

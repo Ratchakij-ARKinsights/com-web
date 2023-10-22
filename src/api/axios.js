@@ -1,8 +1,9 @@
 import axios from "axios";
 import { getAccessToken } from "../utils/localstorage";
 
-// 1. กำหนด baseURL ในรูปแบบนี้เมื่อนำเข้า Axios
-axios.defaults.baseURL = import.meta.env.VITE_API_URL;
+// 1. กำหนด baseURL ในรูปแบบนี้เมื่อนำเข้า Axios (import env for VITE)
+axios.defaults.baseURL = "https://192.168.60.4:8444/";
+// axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 
 // 2. สร้างฟังก์ชันสำหรับการเพิ่ม Token ใน Header
 const addTokenToHeader = (config) => {
@@ -20,8 +21,12 @@ axios.interceptors.request.use(addTokenToHeader, (error) => {
 
 // 4.
 axios.interceptors.response.use(
-  (response) => { return response;},
-  (error) => {return error;}
+  (response) => {
+    return response;
+  },
+  (error) => {
+    return error;
+  }
 );
 
 export default axios;
